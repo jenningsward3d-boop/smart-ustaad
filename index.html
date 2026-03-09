@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>سمارٹ استاد — v4</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;600;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0C1A;--bg2:#0F1228;--card:#141729;--card2:#1A1F38;--border:#232848;
+  --text:#E8ECFF;--t2:#A0A8CC;--muted:#6B7299;
+  --sh:0 4px 24px rgba(0,0,0,0.4);--shlg:0 12px 48px rgba(0,0,0,0.5);
+  --r:20px;--rsm:12px;--nav:#080A16;
+  --blue:#5B6CF9;--blue-d:#4355E8;--violet:#8B5CF6;
+  --cyan:#06B6D4;--green:#10B981;--amber:#F59E0B;--rose:#F43F5E;--gold:#F5A623;
+  --blue-t:rgba(91,108,249,0.15);--violet-t:rgba(139,92,246,0.15);
+  --cyan-t:rgba(6,182,212,0.15);--green-t:rgba(16,185,129,0.15);
+  --amber-t:rgba(245,158,11,0.15);--rose-t:rgba(244,63,94,0.15);--gold-t:rgba(245,166,35,0.15);
+}
+[data-theme=light]{
+  --bg:#F0F2FF;--bg2:#E8EBFF;--card:#FFF;--card2:#F5F7FF;--border:#DDE2F5;
+  --text:#141729;--t2:#3D4466;--muted:#8890B8;--nav:#FFF;
+  --sh:0 4px 24px rgba(20,23,41,0.08);--shlg:0 12px 48px rgba(20,23,41,0.14);
+  --blue-t:rgba(91,108,249,0.1);--violet-t:rgba(139,92,246,0.1);
+  --cyan-t:rgba(6,182,212,0.1);--green-t:rgba(16,185,129,0.1);
+  --amber-t:rgba(245,158,11,0.1);--rose-t:rgba(244,63,94,0.1);--gold-t:rgba(245,166,35,0.1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;}
+.ur{font-family:'Noto Nastaliq Urdu',serif!important;direction:rtl;line-height:2;}
+.mono{font-family:'DM Mono',monospace;}
+.screen{display:none;min-height:100vh;animation:fu .3s ease;}
+.screen.active{display:flex;flex-direction:column;}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* SPLASH */
+#splash{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(91,108,249,.35),transparent 70%),radial-gradient(ellipse 50% 40% at 90% 80%,rgba(139,92,246,.2),transparent 60%),var(--bg);align-items:center;justify-content:center;padding:48px 24px;}
+.sp-wrap{text-align:center;width:100%;max-width:380px;}
+.sp-logo{width:114px;height:114px;border-radius:34px;margin:0 auto 24px;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:54px;box-shadow:0 0 0 16px rgba(91,108,249,.08),0 20px 60px rgba(91,108,249,.45);animation:lb 1s cubic-bezier(.34,1.56,.64,1) both;}
+@keyframes lb{from{opacity:0;transform:scale(.4)rotate(-20deg)}to{opacity:1;transform:scale(1)rotate(0)}}
+.sp-ur{font-family:'Noto Nastaliq Urdu',serif;font-size:clamp(30px,8vw,52px);font-weight:700;direction:rtl;line-height:1.7;animation:fu .5s .3s both;}
+.sp-en{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:3px;text-transform:uppercase;margin:4px 0 20px;animation:fu .5s .4s both;}
+.sp-tag{font-family:'Noto Nastaliq Urdu',serif;font-size:14px;color:var(--muted);direction:rtl;line-height:2;animation:fu .5s .5s both;}
+.bchips{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin:18px 0;animation:fu .5s .6s both;}
+.bchip{background:var(--blue-t);border:1px solid rgba(91,108,249,.25);border-radius:100px;padding:5px 13px;font-size:11px;color:var(--blue);font-weight:700;}
+.sp-btns{display:flex;flex-direction:column;gap:10px;animation:fu .5s .7s both;}
+.btn-g{background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:16px;font-size:16px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;cursor:pointer;box-shadow:0 8px 32px rgba(91,108,249,.4);transition:all .2s;}
+.btn-g:hover{transform:translateY(-2px);}
+.btn-o{background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:14px;font-size:15px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;color:var(--t2);cursor:pointer;transition:all .2s;}
+.btn-o:hover{border-color:var(--blue);color:var(--blue);}
+
+/* ROLE SELECT */
+#roleSelect{background:var(--bg);align-items:center;justify-content:center;padding:48px 20px;gap:20px;}
+.rs-ur{font-family:'Noto Nastaliq Urdu',serif;font-size:26px;font-weight:700;direction:rtl;line-height:2;text-align:center;}
+.rs-sub{font-size:13px;color:var(--muted);text-align:center;margin-top:-8px;}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:380px;}
+.rc{background:var(--card);border:2px solid var(--border);border-radius:var(--r);padding:20px 14px;text-align:center;cursor:pointer;transition:all .25s;}
+.rc:hover,.rc.sel{border-color:var(--blue);background:var(--blue-t);transform:translateY(-3px);}
+.rc-em{font-size:36px;margin-bottom:10px;}
+.rc-n{font-size:15px;font-weight:800;}
+.rc-d{font-size:11px;color:var(--muted);margin-top:3px;}
+.btn-cont{width:100%;max-width:380px;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:16px;font-size:16px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;cursor:pointer;box-shadow:0 6px 28px rgba(91,108,249,.4);}
+
+/* REGISTER */
+.rh{background:linear-gradient(135deg,#5B6CF9,#8B5CF6);padding:48px 22px 24px;color:#fff;}
+.rh h2{font-family:'Noto Nastaliq Urdu',serif;font-size:22px;direction:rtl;line-height:2;}
+.rh p{font-size:12px;opacity:.7;}
+.rb{padding:20px;display:flex;flex-direction:column;gap:13px;flex:1;overflow-y:auto;background:var(--bg);}
+.rb::-webkit-scrollbar{width:0;}
+.fl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;}
+.fi{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:13px 16px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none;transition:border-color .2s;width:100%;}
+.fi:focus{border-color:var(--blue);}
+.fsel{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:13px 16px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none;width:100%;}
+.chips{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{background:var(--card);border:2px solid var(--border);border-radius:100px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text);}
+.chip.sel{background:var(--blue);border-color:var(--blue);color:#fff;}
+.stype-row{display:flex;gap:9px;}
+.stype{flex:1;border:2px solid var(--border);border-radius:14px;padding:11px;text-align:center;cursor:pointer;font-size:12px;font-weight:800;background:var(--card);color:var(--text);transition:all .2s;}
+.stype.sel{background:var(--blue);border-color:var(--blue);color:#fff;}
+.ps-item{display:flex;align-items:center;gap:11px;background:var(--card);border:2px solid var(--border);border-radius:14px;padding:11px 14px;cursor:pointer;transition:all .2s;margin-bottom:8px;}
+.ps-item:hover,.ps-item.sel{border-color:var(--blue);background:var(--blue-t);}
+.reg-btn{background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:16px;font-size:16px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;cursor:pointer;box-shadow:0 6px 28px rgba(91,108,249,.35);}
+
+/* TOP NAV */
+.tnav{background:var(--nav);color:var(--text);padding:11px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;border-bottom:1px solid var(--border);}
+.tn-l{display:flex;align-items:center;gap:9px;}
+.tn-logo{font-family:'Noto Nastaliq Urdu',serif;font-size:18px;font-weight:700;line-height:1.8;}
+.tbadge{border-radius:100px;padding:2px 10px;font-size:9px;font-weight:800;letter-spacing:.3px;}
+.tbf{background:var(--blue-t);color:var(--blue);}
+.tbp{background:var(--gold-t);color:var(--gold);}
+.tbt{background:var(--green-t);color:var(--green);}
+.tbpar{background:var(--rose-t);color:var(--rose);}
+.tba{background:var(--rose-t);color:var(--rose);}
+.tn-r{display:flex;align-items:center;gap:8px;}
+.lsw{display:flex;background:var(--card);border-radius:100px;padding:3px;border:1px solid var(--border);}
+.lsb{border:none;background:transparent;color:var(--muted);font-size:10px;font-weight:800;padding:4px 9px;border-radius:100px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;}
+.lsb.active{background:var(--blue);color:#fff;}
+.tnbtn{width:34px;height:34px;border-radius:50%;background:var(--card);border:1px solid var(--border);color:var(--t2);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:all .2s;}
+.tnbtn:hover{border-color:var(--blue);}
+.ndot{position:absolute;top:4px;right:4px;width:7px;height:7px;border-radius:50%;background:var(--rose);border:2px solid var(--nav);}
+.av{width:34px;height:34px;border-radius:50%;font-size:12px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:16px;}
+.content::-webkit-scrollbar{width:0;}
+.bnav{background:var(--nav);border-top:1px solid var(--border);display:flex;padding:8px 0 6px;position:sticky;bottom:0;z-index:200;}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:3px;font-size:9px;font-weight:700;color:var(--muted);transition:all .2s;text-transform:uppercase;}
+.ni.active{color:var(--blue);}
+.ni-ic{font-size:20px;line-height:1;transition:transform .2s;}
+.ni.active .ni-ic{transform:scale(1.18);}
+
+/* CARDS & SHARED */
+.sh{font-size:17px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.sa{font-size:12px;color:var(--blue);font-weight:700;cursor:pointer;}
+.hcard{border-radius:var(--r);padding:20px;margin-bottom:14px;position:relative;overflow:hidden;color:#fff;}
+.hcard::after{content:'';position:absolute;right:-15px;top:-15px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.07);}
+.hcard::before{content:'';position:absolute;left:-20px;bottom:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.04);}
+.card{background:var(--card);border-radius:var(--r);padding:16px;box-shadow:var(--sh);border:1px solid var(--border);}
+
+/* COUNTDOWN */
+.cd-card{background:linear-gradient(135deg,#141729,#1A1F38);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;text-align:center;position:relative;overflow:hidden;}
+.cd-card::before{content:'⏰';position:absolute;right:-10px;top:-10px;font-size:80px;opacity:.06;}
+.cd-lbl{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.cd-num{font-family:'DM Mono',monospace;font-size:52px;font-weight:700;color:var(--blue);line-height:1;text-shadow:0 0 30px rgba(91,108,249,.5);}
+.cd-unit{font-size:13px;color:var(--muted);margin-top:4px;}
+.cd-bar-wrap{height:6px;background:var(--border);border-radius:100px;margin:14px 0 8px;}
+.cd-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--violet));}
+.cd-sub{font-size:12px;color:var(--muted);}
+.cd-btn{background:var(--blue-t);border:1px solid rgba(91,108,249,.25);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:10px;transition:all .2s;}
+
+/* RING */
+.rrow{display:flex;align-items:center;gap:14px;}
+.ring-wrap{position:relative;flex-shrink:0;}
+.ring-wrap svg{transform:rotate(-90deg);}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:7;}
+.ring-fg{fill:none;stroke-width:7;stroke-linecap:round;stroke-dasharray:201;}
+.ring-txt{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:17px;font-weight:800;}
+
+/* QUICK GRID */
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px;}
+.qgc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;cursor:pointer;transition:all .22s;}
+.qgc:hover{transform:translateY(-3px);box-shadow:var(--shlg);border-color:var(--blue);}
+.qgc-ico{font-size:28px;margin-bottom:8px;}
+.qgc-t{font-size:13px;font-weight:800;}
+.qgc-s{font-size:11px;color:var(--muted);margin-top:2px;}
+.qgc-b{display:inline-block;border-radius:100px;padding:3px 10px;font-size:10px;font-weight:800;margin-top:6px;}
+
+/* STREAK */
+.streak-card{border-radius:var(--r);padding:16px 18px;margin-bottom:14px;background:linear-gradient(135deg,#F59E0B,#EF4444);color:#fff;display:flex;align-items:center;gap:12px;box-shadow:0 6px 28px rgba(245,158,11,.3);}
+.snum{font-size:38px;font-weight:800;line-height:1;}
+.sday{width:25px;height:25px;border-radius:6px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;}
+.sday.done{background:rgba(255,255,255,.45);}
+
+/* PROG BARS */
+.sp-row{margin-bottom:11px;}
+.sp-row:last-child{margin-bottom:0;}
+.sp-hdr{display:flex;justify-content:space-between;margin-bottom:4px;}
+.sp-n{font-size:12px;font-weight:700;}
+.sp-p{font-size:12px;font-weight:700;}
+.sp-t{height:6px;background:var(--border);border-radius:100px;}
+.sp-f{height:100%;border-radius:100px;transition:width 1s ease;}
+
+/* NOTIFICATIONS */
+.notif-item{display:flex;gap:12px;padding:13px;background:var(--card);border-radius:var(--rsm);border:1px solid var(--border);margin-bottom:9px;cursor:pointer;transition:all .2s;}
+.notif-item:hover{border-color:var(--blue);}
+.notif-item.unread{border-left:3px solid var(--blue);}
+.n-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.n-t{font-size:13px;font-weight:700;}
+.n-s{font-size:11px;color:var(--muted);margin-top:2px;}
+.n-tm{font-size:10px;color:var(--muted);margin-top:4px;}
+
+/* SETTINGS */
+.ss-title{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;padding:0 4px;}
+.srow{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border-radius:var(--rsm);margin-bottom:8px;cursor:pointer;transition:all .2s;border:1px solid var(--border);}
+.srow:hover{border-color:var(--blue);}
+.srow-ico{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.srow-t{font-size:14px;font-weight:700;}
+.srow-s{font-size:11px;color:var(--muted);margin-top:2px;}
+.toggle{width:44px;height:24px;border-radius:100px;border:none;cursor:pointer;position:relative;transition:background .3s;flex-shrink:0;}
+.toggle.on{background:var(--blue);}
+.toggle.off{background:var(--border);}
+.toggle::after{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;transition:left .3s;box-shadow:0 2px 6px rgba(0,0,0,.3);}
+.toggle.on::after{left:23px;}
+.toggle.off::after{left:3px;}
+
+/* PREMIUM */
+.prem-hero{background:linear-gradient(135deg,#F59E0B,#F43F5E,#8B5CF6);border-radius:var(--r);padding:28px 20px;text-align:center;color:#fff;margin-bottom:16px;}
+.plan-card{background:var(--card);border:2px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:all .25s;position:relative;margin-bottom:12px;}
+.plan-card.rec{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-t);}
+.plan-rb{position:absolute;top:-10px;right:16px;background:var(--blue);color:#fff;border-radius:100px;padding:3px 14px;font-size:11px;font-weight:800;}
+.plan-price{font-size:28px;font-weight:800;color:var(--blue);margin:6px 0;}
+.plan-save{background:var(--green-t);color:var(--green);border-radius:100px;padding:3px 12px;font-size:11px;font-weight:700;display:inline-block;margin-bottom:12px;}
+.plan-features li{font-size:13px;display:flex;align-items:center;gap:8px;color:var(--t2);margin-bottom:7px;list-style:none;}
+.plan-features li::before{content:'✓';color:var(--green);font-weight:800;flex-shrink:0;}
+.prem-btn{width:100%;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:16px;font-size:16px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;cursor:pointer;box-shadow:0 6px 28px rgba(91,108,249,.4);margin-bottom:10px;}
+.comp-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);}
+.comp-row:last-child{border-bottom:none;}
+.cf{font-size:13px;flex:1;font-weight:600;}
+.ct{width:56px;text-align:center;font-size:16px;font-weight:800;flex-shrink:0;}
+
+/* PLANNER */
+.day-tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px;}
+.day-tabs::-webkit-scrollbar{height:0;}
+.dtab{flex-shrink:0;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px 14px;text-align:center;cursor:pointer;transition:all .2s;min-width:58px;}
+.dtab.active{background:var(--blue);border-color:var(--blue);color:#fff;}
+.dtab-d{font-size:10px;font-weight:700;opacity:.7;}
+.dtab-dt{font-size:16px;font-weight:800;}
+.ts{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:9px;display:flex;gap:13px;cursor:pointer;transition:all .2s;}
+.ts:hover{border-color:var(--blue);}
+.ts.done{opacity:.6;}
+.ts-time{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);width:52px;flex-shrink:0;margin-top:2px;}
+.ts-bar{width:3px;border-radius:100px;flex-shrink:0;min-height:40px;}
+.ts-subj{font-size:14px;font-weight:800;}
+.ts-ch{font-size:12px;color:var(--muted);margin-top:2px;}
+.ts-dur{font-size:11px;font-weight:700;margin-top:4px;}
+.ts-chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s;}
+.ts-chk.done{background:var(--green);border-color:var(--green);color:#fff;}
+.add-slot{width:100%;background:var(--blue-t);border:1.5px dashed rgba(91,108,249,.3);border-radius:14px;padding:13px;font-size:14px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .2s;}
+.add-slot:hover{background:var(--blue);color:#fff;border-style:solid;}
+.pstats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.pst{background:var(--card);border:1px solid var(--border);border-radius:var(--rsm);padding:12px;text-align:center;}
+.pst-v{font-size:20px;font-weight:800;}
+.pst-l{font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;margin-top:2px;}
+
+/* BOOK READER */
+.page-chapter{font-size:18px;font-weight:800;color:var(--blue);margin-bottom:6px;}
+.page-section{font-size:15px;font-weight:800;margin:14px 0 6px;}
+.page-text{font-size:14px;line-height:1.9;color:var(--t2);}
+.page-formula{background:var(--blue-t);border:1px solid rgba(91,108,249,.2);border-radius:10px;padding:12px 16px;margin:12px 0;font-family:'DM Mono',monospace;font-size:14px;color:var(--blue);text-align:center;}
+.page-tip{background:var(--amber-t);border-left:3px solid var(--amber);border-radius:0 8px 8px 0;padding:10px 14px;margin:10px 0;font-size:13px;color:var(--t2);}
+
+/* QUIZ */
+.qs-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.qs-lbl{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:9px;}
+.opts-row{display:flex;flex-wrap:wrap;gap:7px;}
+.qopt{background:var(--card2);border:1.5px solid var(--border);border-radius:100px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text);}
+.qopt.sel{background:var(--blue);border-color:var(--blue);color:#fff;}
+.qopt.locked{opacity:.4;cursor:not-allowed;}
+.gen-btn{background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:15px;width:100%;font-size:15px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;cursor:pointer;}
+.qprog{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:12px;}
+.qp-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.qp-l{font-size:13px;font-weight:800;}
+.qp-t{font-family:'DM Mono',monospace;font-size:15px;font-weight:700;color:var(--blue);}
+.qp-track{height:5px;background:var(--border);border-radius:100px;}
+.qp-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,#5B6CF9,#8B5CF6);transition:width .5s;}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px;}
+.q-num-l{font-size:10px;font-weight:800;color:var(--muted);text-transform:uppercase;margin-bottom:7px;}
+.q-txt{font-size:15px;font-weight:800;line-height:1.5;}
+.q-opts{display:flex;flex-direction:column;gap:8px;margin-top:13px;}
+.qo{border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:9px;background:var(--card);}
+.qo:hover{border-color:var(--blue);background:var(--blue-t);}
+.qo.correct{border-color:var(--green);background:var(--green-t);color:var(--green);}
+.qo.wrong{border-color:var(--rose);background:var(--rose-t);color:var(--rose);}
+.qo-l{width:24px;height:24px;border-radius:6px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;flex-shrink:0;}
+.res-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:24px;text-align:center;}
+.r-sc{font-size:52px;font-weight:800;color:var(--blue);}
+.r-gr{display:inline-block;border-radius:100px;padding:6px 22px;font-size:18px;font-weight:800;margin:8px 0;}
+.ract{display:flex;gap:9px;margin-top:12px;}
+.ra{flex:1;border:none;border-radius:12px;padding:12px;font-size:13px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer;}
+.ra.p{background:var(--blue);color:#fff;}
+.ra.s{background:var(--card2);color:var(--text);border:1.5px solid var(--border);}
+
+/* HOF / LB */
+.hof-filters{display:flex;gap:7px;overflow-x:auto;margin-bottom:14px;}
+.hof-filters::-webkit-scrollbar{height:0;}
+.hfc{flex-shrink:0;background:var(--card);border:1.5px solid var(--border);border-radius:100px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;}
+.hfc.sel{background:var(--blue);border-color:var(--blue);color:#fff;}
+.top3-row{display:flex;align-items:flex-end;justify-content:center;gap:10px;margin:10px 0 20px;}
+.t3i{display:flex;flex-direction:column;align-items:center;gap:5px;}
+.t3av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff;position:relative;}
+.t3crown{position:absolute;top:-18px;font-size:20px;}
+.lb-row{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:11px;transition:all .2s;margin-bottom:8px;}
+.lb-row.me{border-color:var(--blue);background:var(--blue-t);}
+.lb-rank{font-size:15px;font-weight:800;color:var(--muted);width:24px;text-align:center;}
+.lb-av{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;}
+.lb-name{font-size:13px;font-weight:800;}
+.lb-meta{font-size:10px;color:var(--muted);}
+.lb-sc{font-size:15px;font-weight:800;color:var(--blue);}
+
+/* PARENT */
+.child-row{display:flex;gap:9px;overflow-x:auto;margin-bottom:14px;}
+.child-row::-webkit-scrollbar{height:0;}
+.cchip{flex-shrink:0;background:var(--card);border:1.5px solid var(--border);border-radius:100px;padding:7px 15px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text);}
+.cchip.active{background:var(--rose);border-color:var(--rose);color:#fff;}
+.at-item{display:flex;gap:11px;margin-bottom:13px;position:relative;}
+.at-item:not(:last-child)::before{content:'';position:absolute;left:14px;top:30px;width:2px;height:calc(100% + 1px);background:var(--border);}
+.at-dot{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;z-index:1;}
+
+/* ADMIN */
+.admin-kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:13px;}
+.akpi{background:rgba(255,255,255,.1);border-radius:10px;padding:11px;text-align:center;}
+.akpi-v{font-size:19px;font-weight:800;}
+.akpi-l{font-size:10px;opacity:.7;}
+.am-row{display:flex;justify-content:space-between;margin-bottom:3px;font-size:12px;}
+.am-val{font-weight:700;color:var(--blue);}
+.am-track{height:5px;background:var(--border);border-radius:100px;margin-bottom:9px;}
+.am-fill{height:100%;border-radius:100px;}
+.board-item{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:10px;padding:9px 13px;margin-bottom:7px;}
+.bi-l h4{font-size:12px;font-weight:800;}
+.bi-l p{font-size:10px;color:var(--muted);}
+.tog-btn{border:none;border-radius:7px;padding:4px 11px;font-size:11px;font-weight:800;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;}
+.tog-on{background:var(--green-t);color:var(--green);}
+.tog-off{background:var(--amber-t);color:var(--amber);}
+.ur-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);}
+.ur-row:last-child{border-bottom:none;}
+.ur-av{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff;flex-shrink:0;}
+.ub{border-radius:100px;padding:2px 9px;font-size:9px;font-weight:800;}
+.ub-f{background:var(--bg2);color:var(--muted);}
+.ub-p{background:var(--gold-t);color:var(--gold);}
+.ub-t{background:var(--green-t);color:var(--green);}
+.rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.rev-c{border-radius:11px;padding:13px;text-align:center;}
+.rev-v{font-size:19px;font-weight:800;}
+.rev-l{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* TOAST & UTILS */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--blue);color:#fff;border-radius:100px;padding:10px 20px;font-size:12.5px;font-weight:700;opacity:0;transition:all .3s;z-index:9999;white-space:nowrap;pointer-events:none;max-width:88vw;overflow:hidden;text-overflow:ellipsis;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.bbtn{background:var(--blue-t);border:none;border-radius:100px;padding:9px 18px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;display:block;margin:6px auto;transition:all .2s;}
+.bbtn:hover{background:var(--blue);color:#fff;}
+</style>
+
+<!-- PWA META TAGS -->
+<meta name="theme-color" content="#5B6CF9">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="سمارٹ استاد">
+<meta name="application-name" content="Smart Ustaad">
+<meta name="description" content="Pakistan ka #1 Board Exam AI Platform — Grade 5 to 10">
+<link rel="manifest" href="manifest.json">
+<!-- Apple Touch Icons (inline SVG fallback) -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%235B6CF9'/><text y='.9em' font-size='70' x='12'>🎓</text></svg>">
+
+<!-- FIREBASE SDK -->
+<script type="module">
+  import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs, query, where, orderBy, limit } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+  import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCeyaPJ2MPhiZlNH53LrCCf5onLD4KZ-bc",
+    authDomain: "smart-ustaad.firebaseapp.com",
+    projectId: "smart-ustaad",
+    storageBucket: "smart-ustaad.firebasestorage.app",
+    messagingSenderId: "793649449185",
+    appId: "1:793649449185:web:48ff35f38f371a18038fa0",
+    measurementId: "G-HL0RYP700Q"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const analytics = getAnalytics(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  // Make globally available
+  window._fb = { auth, db, googleProvider,
+    createUserWithEmailAndPassword, signInWithEmailAndPassword,
+    signOut, onAuthStateChanged, GoogleAuthProvider, signInWithPopup,
+    doc, setDoc, getDoc, updateDoc, collection, addDoc, getDocs,
+    query, where, orderBy, limit
+  };
+
+  // Watch auth state
+  onAuthStateChanged(auth, async (user) => {
+    if(user) {
+      window._uid = user.uid;
+      window._userEmail = user.email;
+      // Load user data
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        if(snap.exists()) {
+          window._userData = snap.data();
+          updateUIAfterLogin(snap.data());
+        }
+      } catch(e) { console.log('User data load:', e); }
+    } else {
+      window._uid = null;
+      window._userData = null;
+    }
+  });
+
+  console.log('✅ Firebase connected — Smart Ustaad!');
+</script>
+
+<!-- GEMINI AI -->
+<script>
+  const GEMINI_KEY = 'AIzaSyBV7edsXBDkvhjYNDFQjgq3J3HAx0unopk';
+
+  window.askGemini = async function(prompt, systemPrompt) {
+    const sys = systemPrompt || 'Tum Smart Ustaad AI ho. Pakistani board exam Grade 9-10 ke liye expert teacher. Roman Urdu aur English mein jawab do. Concise aur helpful raho.';
+    try {
+      const res = await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: sys + '\n\nStudent sawaal: ' + prompt }] }],
+            generationConfig: { maxOutputTokens: 800, temperature: 0.7 }
+          })
+        }
+      );
+      if(!res.ok) {
+        const err = await res.json();
+        console.error('Gemini error:', JSON.stringify(err));
+        return 'AI error — dobara try karo! (' + (err.error?.status || '') + ')';
+      }
+      const data = await res.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text || 'Jawab nahi mila — dobara try karo!';
+    } catch(e) {
+      console.error('Gemini fetch error:', e.message);
+      return '❌ Error: ' + e.message;
+    }
+  };  };
+
+  console.log('✅ Gemini AI ready!');
+</script>
+
+<script>
+// ===== REAL LOGIN/SIGNUP FUNCTIONS =====
+
+async function realSignup(name, email, password, userData) {
+  try {
+    T('Account ban raha hai...');
+    const { auth, db, createUserWithEmailAndPassword, doc, setDoc } = window._fb;
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    const uid = result.user.uid;
+
+    await setDoc(doc(db, 'users', uid), {
+      name: name,
+      email: email,
+      class: userData.class || '9th',
+      board: userData.board || 'Federal',
+      school: userData.school || '',
+      city: userData.city || '',
+      plan: 'free',
+      createdAt: new Date().toISOString(),
+      lastActive: new Date().toISOString(),
+      streak: 0,
+      totalQuizzes: 0,
+      aiChatsToday: 0,
+      role: 'student'
+    });
+
+    T('✅ Welcome ' + name + '! Account ban gaya!');
+    setTimeout(() => { window._role = 'student'; goDash(); }, 1000);
+  } catch(e) {
+    const msgs = {
+      'auth/email-already-in-use': 'Yeh email pehle se registered hai!',
+      'auth/weak-password': 'Password kam se kam 6 characters ka ho!',
+      'auth/invalid-email': 'Email sahi format mein likho!'
+    };
+    T('❌ ' + (msgs[e.code] || e.message));
+  }
+}
+
+async function realLogin(email, password) {
+  try {
+    T('Login ho raha hai...');
+    const { auth, signInWithEmailAndPassword } = window._fb;
+    await signInWithEmailAndPassword(auth, email, password);
+    T('✅ Login ho gaya!');
+    setTimeout(() => { window._role = 'student'; goDash(); }, 800);
+  } catch(e) {
+    const msgs = {
+      'auth/user-not-found': 'Email registered nahi hai!',
+      'auth/wrong-password': 'Password galat hai!',
+      'auth/invalid-credential': 'Email ya password galat hai!'
+    };
+    T('❌ ' + (msgs[e.code] || e.message));
+  }
+}
+
+async function googleLogin() {
+  try {
+    T('Google se login ho raha hai...');
+    const { auth, db, googleProvider, signInWithPopup, doc, setDoc, getDoc } = window._fb;
+    const result = await signInWithPopup(auth, googleProvider);
+    const user = result.user;
+
+    // Check if new user
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if(!snap.exists()) {
+      await setDoc(doc(db, 'users', user.uid), {
+        name: user.displayName || 'Student',
+        email: user.email,
+        class: '9th', board: 'Federal',
+        plan: 'free',
+        createdAt: new Date().toISOString(),
+        lastActive: new Date().toISOString(),
+        streak: 0, totalQuizzes: 0, aiChatsToday: 0,
+        role: 'student'
+      });
+    }
+    T('✅ Google login ho gaya!');
+    setTimeout(() => { window._role = 'student'; goDash(); }, 800);
+  } catch(e) {
+    T('❌ Google login fail — dobara try karo!');
+  }
+}
+
+async function realLogout() {
+  const { auth, signOut } = window._fb;
+  await signOut(auth);
+  T('Logout ho gaya!');
+  setTimeout(() => S('splash'), 800);
+}
+
+function updateUIAfterLogin(data) {
+  const initials = (data.name||'').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'AA';
+  document.querySelectorAll('.av').forEach(av => av.textContent = initials);
+  if(data.plan === 'premium') {
+    document.querySelectorAll('.tbf').forEach(b => { b.textContent = '⭐ Premium'; b.className = 'tbadge tbp'; });
+  }
+  if(data.name) {
+    window._studentName = data.name;
+  }
+}
+
+// Save quiz result to Firebase
+async function saveQuizToFirebase(subject, score, total) {
+  if(!window._uid || !window._fb) return;
+  try {
+    const { db, collection, addDoc, doc, updateDoc } = window._fb;
+    await addDoc(collection(db, 'quiz_results'), {
+      userId: window._uid,
+      subject: subject,
+      score: score,
+      total: total,
+      percentage: Math.round((score/total)*100),
+      date: new Date().toISOString()
+    });
+    await updateDoc(doc(db, 'users', window._uid), {
+      lastActive: new Date().toISOString(),
+      totalQuizzes: (window._userData?.totalQuizzes || 0) + 1
+    });
+    console.log('Quiz saved!');
+  } catch(e) { console.log('Quiz save error:', e); }
+}
+</script>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- PWA INSTALL BANNER -->
+<div id="installBanner" style="display:none;opacity:0;position:fixed;bottom:80px;left:12px;right:12px;z-index:9998;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border-radius:18px;padding:14px 16px;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(91,108,249,.5);transition:opacity .3s;">
+  <div style="font-size:32px;flex-shrink:0;">🎓</div>
+  <div style="flex:1;">
+    <div style="font-size:14px;font-weight:800;color:#fff;">Smart Ustaad Install Karo!</div>
+    <div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px;">Home screen par add karo — app jaisa experience</div>
+  </div>
+  <button onclick="installApp()" style="background:#fff;border:none;border-radius:100px;padding:8px 16px;font-size:12px;font-weight:800;color:#5B6CF9;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;flex-shrink:0;">Install</button>
+  <button onclick="dismissBanner()" style="background:rgba(255,255,255,.2);border:none;border-radius:50%;width:28px;height:28px;color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;">×</button>
+</div>
+
+
+<!-- SPLASH -->
+<div class="screen active" id="splash">
+<div class="sp-wrap">
+  <div class="sp-logo">🎓</div>
+  <div class="sp-ur">سمارٹ استاد</div>
+  <div class="sp-en">Smart Ustaad AI • v4.0</div>
+  <div class="sp-tag">پاکستان کا نمبر ایک بورڈ امتحان پلیٹ فارم</div>
+  <div class="bchips"><span class="bchip">Federal Board</span><span class="bchip">Punjab PCTB</span><span class="bchip">Sargodha</span><span class="bchip">Lahore Board</span><span class="bchip">Private Schools</span></div>
+  <div class="sp-btns">
+    <button class="btn-g" onclick="S('regScreen')">🚀 نیا اکاؤنٹ بنائیں</button>
+    <button class="btn-o" onclick="S('roleSelect')">Demo Dekho →</button>
+  </div>
+</div>
+</div>
+
+<!-- ROLE SELECT -->
+<div class="screen" id="roleSelect">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 20px;gap:20px;">
+  <div><div class="rs-ur">آپ کون ہیں؟</div><p class="rs-sub">Apna role chunein</p></div>
+  <div class="role-grid">
+    <div class="rc sel" onclick="selRole(this,'student')"><div class="rc-em">📚</div><div class="rc-n">Student</div><div class="rc-d">AI tutor, quiz, planner</div></div>
+    <div class="rc" onclick="selRole(this,'parent')"><div class="rc-em">👨‍👩‍👧</div><div class="rc-n">Parent</div><div class="rc-d">Bachy ki progress</div></div>
+    <div class="rc" onclick="selRole(this,'teacher')"><div class="rc-em">👨‍🏫</div><div class="rc-n">Teacher</div><div class="rc-d">Class management</div></div>
+    <div class="rc" onclick="selRole(this,'admin')"><div class="rc-em">⚙️</div><div class="rc-n">Admin</div><div class="rc-d">Platform control</div></div>
+  </div>
+  <button class="btn-cont" onclick="goDash()">Dashboard Kholo ➜</button>
+</div>
+</div>
+
+<!-- REGISTER -->
+<div class="screen" id="regScreen">
+<div class="rh"><h2>اکاؤنٹ بنائیں 🎓</h2><p>Sirf zaroori info — baqi optional</p></div>
+<div class="rb">
+  <div><div class="fl">Aapka Naam *</div><input class="fi" id="rName" placeholder="Maslan: Ahmed Ali"></div>
+  <div><div class="fl">Father Ka Naam <span style="color:var(--muted);font-size:10px">(optional)</span></div><input class="fi" placeholder="Muhammad Ali"></div>
+  <div><div class="fl">Class *</div><div class="chips" id="classChips">
+    <div class="chip" onclick="togChip(this,'classChips')">5th</div><div class="chip" onclick="togChip(this,'classChips')">6th</div>
+    <div class="chip" onclick="togChip(this,'classChips')">7th</div><div class="chip" onclick="togChip(this,'classChips')">8th</div>
+    <div class="chip sel" onclick="togChip(this,'classChips')">9th</div><div class="chip" onclick="togChip(this,'classChips')">10th</div>
+  </div></div>
+  <div><div class="fl">School Type *</div><div class="stype-row">
+    <div class="stype sel" onclick="selST(this,'govt')">🏛 Govt / Board</div>
+    <div class="stype" onclick="selST(this,'private')">🏫 Private School</div>
+  </div></div>
+  <div id="govtSec"><div class="fl">Board *</div><div class="chips" id="boardChips">
+    <div class="chip sel" onclick="togChip(this,'boardChips')">Federal</div>
+    <div class="chip" onclick="togChip(this,'boardChips')">Punjab PCTB</div>
+    <div class="chip" onclick="togChip(this,'boardChips')">Sargodha</div>
+    <div class="chip" onclick="togChip(this,'boardChips')">Lahore</div>
+    <div class="chip" onclick="togChip(this,'boardChips')">Karachi</div>
+    <div class="chip" onclick="togChip(this,'boardChips')">AJK</div>
+  </div></div>
+  <div id="privSec" style="display:none">
+    <div class="fl">Private School Chunein</div>
+    <div class="ps-item sel" onclick="selPS(this)"><span style="font-size:20px">🏫</span><div><div style="font-size:13px;font-weight:800">Beaconhouse School</div><div style="font-size:11px;color:var(--muted)">National Chain</div></div></div>
+    <div class="ps-item" onclick="selPS(this)"><span style="font-size:20px">🏫</span><div><div style="font-size:13px;font-weight:800">The City School</div><div style="font-size:11px;color:var(--muted)">National Chain</div></div></div>
+    <div class="ps-item" onclick="selPS(this)"><span style="font-size:20px">🏫</span><div><div style="font-size:13px;font-weight:800">Allied School</div><div style="font-size:11px;color:var(--muted)">National Chain</div></div></div>
+    <div class="ps-item" onclick="selPS(this)"><span style="font-size:20px">🕌</span><div><div style="font-size:13px;font-weight:800">Dar-e-Arqam</div><div style="font-size:11px;color:var(--muted)">National Chain</div></div></div>
+    <div class="ps-item" onclick="selPS(this)"><span style="font-size:20px">🏫</span><div><div style="font-size:13px;font-weight:800">Spirit School</div><div style="font-size:11px;color:var(--muted)">National Chain</div></div></div>
+    <div class="ps-item" onclick="selPS(this)"><span style="font-size:20px">🏫</span><div><div style="font-size:13px;font-weight:800">Roots School</div><div style="font-size:11px;color:var(--muted)">National Chain</div></div></div>
+    <div style="margin-top:10px"><div class="fl">Ya Apna School Likho</div><input class="fi" placeholder="School ka naam..."></div>
+  </div>
+  <div><div class="fl">Shehar <span style="color:var(--muted);font-size:10px">(optional)</span></div>
+    <select class="fsel"><option>Lahore</option><option>Karachi</option><option>Islamabad</option><option>Rawalpindi</option><option>Sargodha</option><option>Faisalabad</option><option>Multan</option><option>Peshawar</option></select>
+  </div>
+  <div><div class="fl">Email *</div><input class="fi" id="rEmail" type="email" placeholder="apki.email@gmail.com"></div>
+  <div><div class="fl">Password *</div><input class="fi" id="rPass" type="password" placeholder="6+ characters..."></div>
+  <button onclick="googleLogin()" style="background:#fff;border:1.5px solid var(--border);border-radius:100px;padding:13px;font-size:14px;font-weight:700;color:#333;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;"><img src='https://www.google.com/favicon.ico' width='16'> Google se Register</button>
+  <button class="reg-btn" onclick="doReg()">✓ Account Banao</button>
+  <div style="text-align:center;font-size:13px;color:var(--muted);padding:6px 0">Pehle se account hai? <span style="color:var(--blue);font-weight:700;cursor:pointer" onclick="S('roleSelect')">Login Karo</span></div>
+</div>
+</div>
+
+<!-- STUDENT APP -->
+<div class="screen" id="sApp">
+<div class="tnav">
+  <div class="tn-l"><span style="font-size:20px">🎓</span><span class="tn-logo">سمارٹ استاد</span><span class="tbadge tbf">Free</span></div>
+  <div class="tn-r">
+    <div class="lsw"><button class="lsb active" onclick="setL('roman',this)">RM</button><button class="lsb" onclick="setL('urdu',this)">UR</button><button class="lsb" onclick="setL('en',this)">EN</button></div>
+    <button class="tnbtn" onclick="toggleTheme()">☀️</button>
+    <button class="tnbtn" onclick="sTab('notif')">🔔<span class="ndot"></span></button>
+    <div class="av" style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6)" onclick="sTab('settings')">AA</div>
+  </div>
+</div>
+<div class="content" id="sCont"></div>
+<div class="bnav">
+  <div class="ni active" onclick="sTab('home',this)"><div class="ni-ic">🏠</div>Home</div>
+  <div class="ni" onclick="sTab('tutor',this)"><div class="ni-ic">🤖</div>AI Tutor</div>
+  <div class="ni" onclick="sTab('planner',this)"><div class="ni-ic">📅</div>Planner</div>
+  <div class="ni" onclick="sTab('quiz',this)"><div class="ni-ic">📝</div>Quiz</div>
+  <div class="ni" onclick="sTab('tools',this)"><div class="ni-ic">🛠️</div>Tools</div>
+  <div class="ni" onclick="sTab('hof',this)"><div class="ni-ic">🏆</div>Ranks</div>
+</div>
+</div>
+
+<!-- PARENT APP -->
+<div class="screen" id="pApp">
+<div class="tnav">
+  <div class="tn-l"><span style="font-size:20px">👨‍👩‍👧</span><span class="tn-logo">والدین</span><span class="tbadge tbpar">Parent</span></div>
+  <div class="tn-r"><div class="lsw"><button class="lsb active" onclick="setL('roman',this)">RM</button><button class="lsb" onclick="setL('urdu',this)">UR</button><button class="lsb" onclick="setL('en',this)">EN</button></div><button class="tnbtn" onclick="toggleTheme()">☀️</button><div class="av" style="background:linear-gradient(135deg,#F43F5E,#9333EA)">MA</div></div>
+</div>
+<div class="content" id="pCont"></div>
+<div class="bnav">
+  <div class="ni active" onclick="pTab('overview',this)"><div class="ni-ic">📊</div>Overview</div>
+  <div class="ni" onclick="pTab('activity',this)"><div class="ni-ic">🕐</div>Activity</div>
+  <div class="ni" onclick="pTab('report',this)"><div class="ni-ic">📄</div>Report</div>
+</div>
+</div>
+
+<!-- TEACHER APP -->
+<div class="screen" id="tApp">
+<div class="tnav">
+  <div class="tn-l"><span style="font-size:20px">👨‍🏫</span><span class="tn-logo">استاد پینل</span><span class="tbadge tbt">Teacher</span></div>
+  <div class="tn-r"><div class="lsw"><button class="lsb active" onclick="setL('roman',this)">RM</button><button class="lsb" onclick="setL('urdu',this)">UR</button><button class="lsb" onclick="setL('en',this)">EN</button></div><button class="tnbtn" onclick="toggleTheme()">☀️</button><div class="av" style="background:linear-gradient(135deg,#10B981,#059669)">SR</div></div>
+</div>
+<div class="content" id="tCont"></div>
+<div class="bnav">
+  <div class="ni active" onclick="tTab('classes',this)"><div class="ni-ic">🏫</div>Classes</div>
+  <div class="ni" onclick="tTab('students',this)"><div class="ni-ic">👥</div>Students</div>
+  <div class="ni" onclick="tTab('reports',this)"><div class="ni-ic">📊</div>Reports</div>
+</div>
+</div>
+
+<!-- ADMIN APP -->
+<div class="screen" id="aApp">
+<div class="tnav">
+  <div class="tn-l"><span style="font-size:20px">⚙️</span><span class="tn-logo">ایڈمن</span><span class="tbadge tba">Admin</span></div>
+  <div class="tn-r"><div class="lsw"><button class="lsb active" onclick="setL('roman',this)">RM</button><button class="lsb" onclick="setL('urdu',this)">UR</button><button class="lsb" onclick="setL('en',this)">EN</button></div><button class="tnbtn" onclick="toggleTheme()">☀️</button><div class="av" style="background:linear-gradient(135deg,#F43F5E,#DC2626)">SA</div></div>
+</div>
+<div class="content" id="aCont"></div>
+<div class="bnav">
+  <div class="ni active" onclick="aTab('overview',this)"><div class="ni-ic">📊</div>Overview</div>
+  <div class="ni" onclick="aTab('users',this)"><div class="ni-ic">👥</div>Users</div>
+  <div class="ni" onclick="aTab('revenue',this)"><div class="ni-ic">💰</div>Revenue</div>
+</div>
+</div>
+
+<script>
+let curLang='roman',isDark=true;
+let qIdx=0,qScore=0,qTime=300,qTimer=null;
+const Qs=[
+  {q:"Newton ka pehla qanoon kehta hai:",opts:["Har jism apni halat mein rehta hai jab tak force na lage","F = ma","Har action ka equal reaction","Velocity constant"],ans:0},
+  {q:"F = ma mein 'a':",opts:["Area","Amplitude","Acceleration","Angle"],ans:2},
+  {q:"Newton ka teesra qanoon:",opts:["F = ma","Har action ka equal aur opposite reaction","Energy conserve","Velocity constant"],ans:1},
+  {q:"Mass 4kg, acc 5m/s² — force?",opts:["9 N","1 N","20 N","45 N"],ans:2},
+  {q:"Free fall mein acceleration?",opts:["5 m/s²","9.8 m/s²","10.5 m/s²","8 m/s²"],ans:1}
+];
+
+function S(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function T(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function toggleTheme(){isDark=!isDark;document.body.setAttribute('data-theme',isDark?'':'light');document.querySelectorAll('.tnbtn').forEach(b=>{if(['☀️','🌙'].includes(b.textContent))b.textContent=isDark?'☀️':'🌙';});}
+function togChip(el,grp){document.getElementById(grp).querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function selRole(el,r){window._role=r;document.querySelectorAll('.rc').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+function selST(el,t){document.querySelectorAll('.stype').forEach(s=>s.classList.remove('sel'));el.classList.add('sel');document.getElementById('govtSec').style.display=t==='govt'?'block':'none';document.getElementById('privSec').style.display=t==='private'?'block':'none';}
+function selPS(el){document.querySelectorAll('.ps-item').forEach(p=>p.classList.remove('sel'));el.classList.add('sel');}
+function setL(l,btn){curLang=l;btn.closest('.lsw').querySelectorAll('.lsb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');T(l==='roman'?'Roman Urdu ✓':l==='urdu'?'اردو ✓':'English ✓');}
+function doReg(){
+  const name = document.getElementById('rName').value.trim();
+  const email = document.getElementById('rEmail') ? document.getElementById('rEmail').value.trim() : '';
+  const pass = document.getElementById('rPass') ? document.getElementById('rPass').value.trim() : '';
+  const cls = document.querySelector('#classChips .chip.sel')?.textContent || '9th';
+  const board = document.querySelector('#boardChips .chip.sel')?.textContent || 'Federal';
+  
+  if(!name){ T('Naam zaroori hai!'); return; }
+  if(!email || !pass){ 
+    // Demo mode — no real auth
+    T('Welcome ' + name + '! 🎉');
+    setTimeout(()=>{window._role='student';goDash();},1000);
+    return;
+  }
+  realSignup(name, email, pass, {class: cls, board: board});
+}
+function goDash(){const r=window._role||'student';const m={student:'sApp',parent:'pApp',teacher:'tApp',admin:'aApp'};S(m[r]);if(r==='student')renderHome();else if(r==='parent')renderParent();else if(r==='teacher')renderTeacher();else renderAdmin();}
+
+// NAV HELPERS
+function setActive(selector,el){document.querySelectorAll(selector+' .ni').forEach(n=>n.classList.remove('active'));if(el&&el.classList)el.classList.add('active');}
+
+// STUDENT TABS
+function sTab(tab,el){
+  setActive('#sApp',el);
+  ({home:renderHome,tutor:renderTutor,planner:renderPlanner,quiz:renderQuiz,hof:renderHOF,notif:renderNotif,settings:renderSettings,premium:renderPremium,books:renderBooks,tools:renderTools}[tab]||renderHome)();
+}
+
+function renderHome(){
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:14px">
+    <div class="hcard" style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6)">
+      <div style="font-size:26px;position:relative;z-index:1">👋</div>
+      <div style="font-size:20px;font-weight:800;position:relative;z-index:1;margin-top:4px">${curLang==='urdu'?'<span class="ur" style="font-size:18px">السلام علیکم احمد!</span>':'Assalam o Alaikum, Ahmed!'}</div>
+      <div style="font-size:12px;opacity:.8;margin-top:2px;position:relative;z-index:1">${curLang==='urdu'?'<span class="ur" style="font-size:12px">بورڈ امتحان میں ۴۷ دن باقی</span>':'Board exam mein 47 din baqi!'}</div>
+      <div style="display:flex;gap:7px;margin-top:10px;flex-wrap:wrap;position:relative;z-index:1">
+        <span style="background:rgba(255,255,255,.18);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700">📚 Grade 9</span>
+        <span style="background:rgba(255,255,255,.18);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700">🏛 Federal</span>
+        <span style="background:rgba(255,255,255,.18);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700">🔥 5 streak</span>
+      </div>
+    </div>
+
+    <div class="cd-card">
+      <div class="cd-lbl">⏰ Board Exam Countdown</div>
+      <div class="cd-num">47</div>
+      <div class="cd-unit">din baqi hain</div>
+      <div class="cd-bar-wrap"><div class="cd-bar" style="width:68%"></div></div>
+      <div class="cd-sub">March 25, 2025 — Annual Board Exams</div>
+      <button class="cd-btn" onclick="T('Settings mein exam date set karo!')">📅 Exam Date Set Karo</button>
+    </div>
+
+    <div class="card rrow">
+      <div class="ring-wrap">
+        <svg width="68" height="68" viewBox="0 0 68 68"><circle class="ring-bg" cx="34" cy="34" r="27"/><circle class="ring-fg" cx="34" cy="34" r="27" stroke="#5B6CF9" stroke-dashoffset="50"/></svg>
+        <div class="ring-txt" style="color:var(--blue)">70%</div>
+      </div>
+      <div>
+        <div style="font-size:14px;font-weight:800">Exam Readiness</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Chemistry strong karo!</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px">
+          <span style="background:var(--green-t);color:var(--green);border-radius:100px;padding:3px 10px;font-size:10px;font-weight:700">Physics ✓</span>
+          <span style="background:var(--rose-t);color:var(--rose);border-radius:100px;padding:3px 10px;font-size:10px;font-weight:700">Chem ✗</span>
+          <span style="background:var(--amber-t);color:var(--amber);border-radius:100px;padding:3px 10px;font-size:10px;font-weight:700">Bio ~</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sh">Quick Actions <span class="sa">Sab →</span></div>
+    <div class="qgrid">
+      <div class="qgc" onclick="sTab('tutor')"><div class="qgc-ico">🤖</div><div class="qgc-t">AI Tutor</div><div class="qgc-s">Sawaal pucho</div><span class="qgc-b" style="background:var(--blue-t);color:var(--blue)">10/day</span></div>
+      <div class="qgc" onclick="sTab('planner')"><div class="qgc-ico">📅</div><div class="qgc-t">Study Planner</div><div class="qgc-s">Aaj ka schedule</div><span class="qgc-b" style="background:var(--green-t);color:var(--green)">Free</span></div>
+      <div class="qgc" onclick="sTab('books')"><div class="qgc-ico">📖</div><div class="qgc-t">Book Reader</div><div class="qgc-s">AI ke saath parho</div><span class="qgc-b" style="background:var(--cyan-t);color:var(--cyan)">AI Chat</span></div>
+      <div class="qgc" onclick="sTab('premium')"><div class="qgc-ico">💎</div><div class="qgc-t">Premium Lo</div><div class="qgc-s">Unlimited features</div><span class="qgc-b" style="background:var(--gold-t);color:var(--gold)">Rs.149/mo</span></div>
+    </div>
+
+    <div class="streak-card">
+      <div style="font-size:28px">🔥</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:baseline;gap:5px"><div class="snum">5</div><div style="font-size:12px;font-weight:700">Din ki Streak!</div></div>
+        <div style="display:flex;gap:4px;margin-top:5px">
+          ${['S','S','M','T','W','T','F'].map((d,i)=>`<div class="sday${i<5?' done':''}">${d}</div>`).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="sh">Kamzoor Topics ⚠️</div>
+    <div class="card">
+      ${[['Chemistry — Organic',35,'var(--rose)'],['Biology — Nervous System',48,'var(--amber)'],['Physics — Electrostatics',58,'var(--amber)']].map(([s,p,c])=>`
+      <div class="sp-row"><div class="sp-hdr"><span class="sp-n">${s}</span><span class="sp-p" style="color:${c}">${p}%</span></div>
+      <div class="sp-t"><div class="sp-f" style="width:${p}%;background:${c}"></div></div></div>`).join('')}
+    </div>
+    <button class="bbtn" onclick="S('roleSelect')">← Demo Menu</button>
+  </div>`;}
+
+function renderTutor(){
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;height:calc(100vh - 130px);">
+    <div style="background:var(--nav);padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;border-radius:var(--r) var(--r) 0 0;">
+      <div style="width:42px;height:42px;border-radius:13px;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:20px;">🤖</div>
+      <div><div style="font-size:14px;font-weight:800">AI Ustaad</div><div style="font-size:11px;color:var(--green);font-weight:700;display:flex;align-items:center;gap:3px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span>Online</div></div>
+      <div style="margin-left:auto;display:flex;gap:5px;">
+        <button style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 11px;font-size:11px;font-weight:800;color:var(--t2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Simple</button>
+        <button style="background:var(--blue);border:none;border-radius:8px;padding:5px 11px;font-size:11px;font-weight:800;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Exam</button>
+      </div>
+    </div>
+    <div style="background:var(--nav);padding:7px 12px;border-bottom:1px solid var(--border);display:flex;gap:7px;overflow-x:auto;">
+      ${['Physics','Chemistry','Biology','Math','English','Urdu'].map((s,i)=>`<div onclick="T('${s} selected!')" style="flex-shrink:0;background:${i===0?'var(--blue)':'var(--card)'};border:1.5px solid ${i===0?'var(--blue)':'var(--border)'};border-radius:100px;padding:4px 13px;font-size:11px;font-weight:700;cursor:pointer;color:${i===0?'#fff':'var(--text)'}">${s}</div>`).join('')}
+    </div>
+    <div id="msgs" style="flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:11px;">
+      <div style="display:flex;gap:8px;max-width:88%">
+        <div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);display:flex;align-items:center;justify-content:center;flex-shrink:0;">🤖</div>
+        <div>
+          <div style="background:var(--card);border-radius:13px;border-bottom-left-radius:3px;padding:11px 13px;font-size:13px;line-height:1.65;border:1px solid var(--border);">${curLang==='urdu'?'<span class="ur" style="font-size:14px">السلام علیکم احمد! آج کون سا مضمون پڑھنا ہے؟</span>':'Assalam o Alaikum Ahmed! 🎓<br><br>Main hoon aapka AI Ustaad. Kaunsa topic padhna hai aaj?'}</div>
+          <div style="font-size:10px;color:var(--muted);padding:0 3px;margin-top:3px">Abhi</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap">
+        <div onclick="sendSugg(this)" style="background:var(--blue-t);border:1.5px solid rgba(91,108,249,.2);border-radius:100px;padding:6px 13px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer">Newton ka qanoon</div>
+        <div onclick="sendSugg(this)" style="background:var(--blue-t);border:1.5px solid rgba(91,108,249,.2);border-radius:100px;padding:6px 13px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer">📸 Book upload</div>
+        <div onclick="sendSugg(this)" style="background:var(--blue-t);border:1.5px solid rgba(91,108,249,.2);border-radius:100px;padding:6px 13px;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer">Past paper Qs</div>
+      </div>
+    </div>
+    <div style="height:3px;background:var(--border);"><div style="width:30%;height:100%;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:100px;"></div></div>
+    <div style="text-align:center;padding:4px;font-size:11px;color:var(--muted);background:var(--nav)">3/10 used • <span style="color:var(--blue);font-weight:700;cursor:pointer" onclick="T('Ad dekh kar 5 aur!')">Aur chahiye?</span></div>
+    <div style="background:var(--nav);padding:9px 12px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:flex-end">
+      <textarea id="cinp" placeholder="Sawaal likho..." rows="1" onkeydown="chatKey(event)" style="flex:1;border:1.5px solid var(--border);border-radius:11px;padding:9px 12px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);background:var(--card);resize:none;outline:none;max-height:100px;transition:border-color .2s;"></textarea>
+      <button onclick="sendChat()" style="width:40px;height:40px;border-radius:11px;background:var(--blue);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;">➤</button>
+    </div>
+  </div>`;}
+
+function chatKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}}
+async function sendChat(){
+  const i=document.getElementById('cinp');
+  const txt=i.value.trim();
+  if(!txt)return;
+  addMsg(txt,true);
+  i.value='';
+  addTyping();
+  try {
+    const reply = await window.askGemini(txt,
+      'Tum Smart Ustaad AI ho — Pakistan board exam (Grade 9-10) ke liye expert teacher. Roman Urdu aur English mix mein jawab do. Important points ko ✅ se highlight karo. Board exam ke liye zaroori cheezein bold karo. Concise rakho.');
+    removeTyping();
+    addMsg(reply, false);
+  } catch(e) {
+    removeTyping();
+    addMsg('Internet check karo — AI se connect nahi ho pa raha!', false);
+  }
+}
+async function sendSugg(el){
+  const txt=el.textContent;
+  addMsg(txt,true);
+  el.parentElement.remove();
+  addTyping();
+  try {
+    const reply = await window.askGemini(txt,
+      'Tum Smart Ustaad AI ho — Pakistan board exam expert teacher. Roman Urdu mein jawab do. Concise aur helpful raho.');
+    removeTyping();
+    addMsg(reply, false);
+  } catch(e) {
+    removeTyping();
+    addMsg('Internet check karo!', false);
+  }
+}
+function addMsg(txt,u){const m=document.getElementById('msgs');if(!m)return;const d=document.createElement('div');d.style.cssText=`display:flex;gap:8px;max-width:88%;${u?'align-self:flex-end;flex-direction:row-reverse;':''}`;d.innerHTML=`<div style="width:30px;height:30px;border-radius:9px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;background:linear-gradient(135deg,${u?'#1A1D3B,#5B6CF9':'#5B6CF9,#8B5CF6'})">${u?'👤':'🤖'}</div><div><div style="background:${u?'linear-gradient(135deg,#5B6CF9,#4355E8)':'var(--card)'};border-radius:13px;${u?'border-bottom-right-radius:3px':'border-bottom-left-radius:3px'};padding:11px 13px;font-size:13px;line-height:1.65;color:${u?'#fff':'var(--text)'};border:${u?'none':'1px solid var(--border)'};">${txt.replace(/\n/g,'<br>')}</div><div style="font-size:10px;color:var(--muted);padding:0 3px;margin-top:3px;${u?'text-align:right':''}">Abhi</div></div>`;m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function addTyping(){const m=document.getElementById('msgs');if(!m)return;const d=document.createElement('div');d.id='typ';d.style.cssText='display:flex;gap:8px;';d.innerHTML='<div style="width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);display:flex;align-items:center;justify-content:center">🤖</div><div style="background:var(--card);border-radius:13px;border-bottom-left-radius:3px;padding:11px 13px;border:1px solid var(--border);display:flex;gap:4px;width:56px"><div style="width:7px;height:7px;border-radius:50%;background:var(--muted);animation:tb 1.2s infinite"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--muted);animation:tb 1.2s .2s infinite"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--muted);animation:tb 1.2s .4s infinite"></div></div>';m.appendChild(d);m.scrollTop=m.scrollHeight;if(!document.getElementById('tbSt')){const s=document.createElement('style');s.id='tbSt';s.textContent='@keyframes tb{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}';document.head.appendChild(s);}}
+function removeTyping(){const t=document.getElementById('typ');if(t)t.remove();}
+
+function renderPlanner(){
+  const slots=[{t:'7:00',s:'Physics',ch:'Ch.1 — Newton\'s Laws',dur:'45 min',c:'#5B6CF9',done:true},{t:'9:00',s:'Chemistry',ch:'Ch.8 — Organic',dur:'60 min',c:'#F43F5E',done:false},{t:'12:00',s:'Math',ch:'Ch.3 — Algebra',dur:'45 min',c:'#10B981',done:false},{t:'3:00',s:'Biology',ch:'Ch.12 — Nervous System',dur:'30 min',c:'#F59E0B',done:false},{t:'6:00',s:'English',ch:'Essay Practice',dur:'30 min',c:'#06B6D4',done:false}];
+  const days=[{d:'Sat',dt:'15'},{d:'Sun',dt:'16'},{d:'Mon',dt:'17'},{d:'Tue',dt:'18'},{d:'Wed',dt:'19'},{d:'Thu',dt:'20'},{d:'Fri',dt:'21'}];
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div class="hcard" style="background:linear-gradient(135deg,#10B981,#06B6D4)">
+      <div style="font-size:24px;position:relative;z-index:1">📅</div>
+      <div style="font-size:18px;font-weight:800;position:relative;z-index:1">Daily Study Planner</div>
+      <div style="font-size:12px;opacity:.8;margin-top:2px;position:relative;z-index:1">Aaj ka plan follow karo — top karo!</div>
+    </div>
+    <div class="pstats">
+      <div class="pst"><div class="pst-v" style="color:var(--blue)">3.5h</div><div class="pst-l">Goal</div></div>
+      <div class="pst"><div class="pst-v" style="color:var(--green)">1/5</div><div class="pst-l">Done</div></div>
+      <div class="pst"><div class="pst-v" style="color:var(--amber)">80%</div><div class="pst-l">Weekly</div></div>
+    </div>
+    <div class="day-tabs">${days.map((d,i)=>`<div class="dtab${i===1?' active':''}" onclick="T('${d.d} ka schedule!')"><div class="dtab-d">${d.d}</div><div class="dtab-dt">${d.dt}</div></div>`).join('')}</div>
+    <div class="sh">Aaj Ka Schedule — Sunday</div>
+    ${slots.map(s=>`
+    <div class="ts${s.done?' done':''}">
+      <div class="ts-time">${s.t} AM</div>
+      <div class="ts-bar" style="background:${s.c}"></div>
+      <div style="flex:1"><div class="ts-subj">${s.s}</div><div class="ts-ch">${s.ch}</div><div class="ts-dur" style="color:${s.c}">⏱ ${s.dur}</div></div>
+      <div class="ts-chk${s.done?' done':''}" onclick="this.classList.toggle('done');T(this.classList.contains('done')?'✅ Complete!':'Unmarked')">${s.done?'✓':''}</div>
+    </div>`).join('')}
+    <button class="add-slot" onclick="T('New slot add karo!')">+ Naya Study Slot Add Karo</button>
+    <button class="bbtn" onclick="renderHome()">← Home</button>
+  </div>`;}
+
+function renderBooks(){
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:0;">
+    <div style="background:var(--nav);padding:11px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;border-radius:var(--r) var(--r) 0 0;">
+      <button class="tnbtn" onclick="renderHome()" style="font-size:14px;font-weight:800;">←</button>
+      <div style="flex:1;font-size:14px;font-weight:800">Physics — Chapter 1</div>
+      <button onclick="T('Highlight on!')" style="background:var(--blue);border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">🖊 Mark</button>
+      <button onclick="T('📸 Camera kholo!')" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;color:var(--t2);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">📸 Scan</button>
+    </div>
+    <div style="flex:1;overflow-y:auto;padding:20px;background:var(--card2);min-height:400px;">
+      <div style="max-width:600px;margin:0 auto;">
+        <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:14px;font-weight:700">Page 12 / 180 — Federal Board Physics Gr.9</div>
+        <div class="page-chapter">Chapter 1: Physical Quantities</div>
+        <div class="page-section">1.3 Newton's Laws of Motion</div>
+        <div class="page-text">Newton's laws describe the relationship between a body and the forces acting upon it, and its motion in response to those forces.</div>
+        <div class="page-formula">F = m × a</div>
+        <div class="page-tip">⭐ Board Exam Tip: Newton ka pehla qanoon "Law of Inertia" bhi kehte hain — definition zaroori hai!</div>
+        <div class="page-text" style="margin-top:12px">The first law states that every object will remain at rest or in uniform motion unless compelled to change its state by an external force. This is also called the law of inertia.</div>
+        <div class="page-section">Key Terms</div>
+        <div class="page-text">• <strong>Inertia:</strong> Resistance to change in motion<br>• <strong>Force:</strong> Push or pull on an object<br>• <strong>Momentum:</strong> Product of mass and velocity (p = mv)</div>
+      </div>
+    </div>
+    <div style="background:var(--nav);border-top:1px solid var(--border);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <button onclick="T('Previous!')" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;color:var(--t2);font-family:'Plus Jakarta Sans',sans-serif;">← Pehle</button>
+        <span style="font-size:13px;font-weight:700;color:var(--muted)">12/180</span>
+        <button onclick="T('Next page!')" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;color:var(--t2);font-family:'Plus Jakarta Sans',sans-serif;">Aage →</button>
+      </div>
+      <button onclick="sTab('tutor');T('Is page ke baare mein pucho!')" style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:9px 16px;font-size:12px;font-weight:800;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">🤖 AI Se Pucho</button>
+    </div>
+  </div>`;}
+
+function renderQuiz(){
+  document.getElementById('sCont').innerHTML=`
+  <div class="sh">Quiz Generator 📝</div>
+  <div id="qSetup" style="display:flex;flex-direction:column;gap:12px;">
+    <div class="qs-card"><div class="qs-lbl">Subject</div><div class="opts-row">${['Physics','Chemistry','Biology','Math','English'].map((s,i)=>`<div class="qopt${i===0?' sel':''}" onclick="selO(this)">${s}</div>`).join('')}</div></div>
+    <div class="qs-card"><div class="qs-lbl">Chapter</div><div class="opts-row">${['Ch.1','Ch.2','Ch.3','Full Book'].map((c,i)=>`<div class="qopt${i===0?' sel':''}" onclick="selO(this)">${c}</div>`).join('')}</div></div>
+    <div class="qs-card"><div class="qs-lbl">Type</div><div class="opts-row"><div class="qopt sel" onclick="selO(this)">MCQs</div><div class="qopt" onclick="selO(this)">Short Q</div><div class="qopt locked" onclick="T('Premium mein!')">Full Paper 🔒</div></div></div>
+    <div class="qs-card"><div class="qs-lbl">Tadaad</div><div class="opts-row"><div class="qopt sel" onclick="selO(this)">5</div><div class="qopt" onclick="selO(this)">10</div><div class="qopt locked" onclick="T('Premium!')">20 🔒</div></div></div>
+    <button class="gen-btn" onclick="startQ()">🤖 AI Quiz Generate Karo</button>
+  </div>
+  <div id="qActive" style="display:none;flex-direction:column;gap:12px;">
+    <div class="qprog"><div class="qp-row"><span class="qp-l" id="qLbl">Sawaal 1/5</span><span class="qp-t" id="qTmr">05:00</span></div><div class="qp-track"><div class="qp-fill" id="qFill" style="width:20%"></div></div></div>
+    <div class="q-card" id="qCard"><div class="q-num-l">Physics • Ch.1 • MCQ</div><div class="q-txt" id="qTxt"></div><div class="q-opts" id="qOpts"></div></div>
+    <div class="res-card" id="qRes" style="display:none"><div style="font-size:44px">🎉</div><div class="r-sc" id="rSc"></div><div style="font-size:12px;color:var(--muted)">Quiz Complete!</div><div class="r-gr" id="rGr"></div><div class="ract"><button class="ra s" onclick="renderQuiz()">Dobara</button><button class="ra p" onclick="renderHOF()">Hall of Fame</button></div></div>
+  </div>`;}
+function selO(el){el.parentElement.querySelectorAll('.qopt:not(.locked)').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+function startQ(){qIdx=0;qScore=0;qTime=300;document.getElementById('qSetup').style.display='none';const qa=document.getElementById('qActive');qa.style.display='flex';loadQn();qTimer=setInterval(()=>{qTime--;const m=Math.floor(qTime/60),s=qTime%60;document.getElementById('qTmr').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;if(qTime<=0){clearInterval(qTimer);showQRes();}},1000);}
+function loadQn(){if(qIdx>=Qs.length){showQRes();return;}const q=Qs[qIdx];document.getElementById('qLbl').textContent=`Sawaal ${qIdx+1}/${Qs.length}`;document.getElementById('qFill').style.width=`${((qIdx+1)/Qs.length)*100}%`;document.getElementById('qTxt').textContent=q.q;const oc=document.getElementById('qOpts');oc.innerHTML='';['A','B','C','D'].forEach((l,i)=>{const d=document.createElement('div');d.className='qo';d.innerHTML=`<span class="qo-l">${l}</span>${q.opts[i]}`;d.onclick=()=>{document.querySelectorAll('.qo').forEach(o=>o.onclick=null);if(i===q.ans){d.classList.add('correct');qScore++;}else{d.classList.add('wrong');document.querySelectorAll('.qo')[q.ans].classList.add('correct');}setTimeout(()=>{qIdx++;loadQn();},1300);};oc.appendChild(d);});}
+function showQRes(){clearInterval(qTimer);document.getElementById('qCard').style.display='none';document.getElementById('qRes').style.display='block';document.getElementById('rSc').textContent=`${qScore}/${Qs.length}`;const p=(qScore/Qs.length)*100;const g=p>=90?'A+':p>=80?'A':p>=70?'B':p>=60?'C':'F';const c=p>=70?'background:var(--green-t);color:var(--green)':p>=50?'background:var(--amber-t);color:var(--amber)':'background:var(--rose-t);color:var(--rose)';document.getElementById('rGr').style.cssText=c;document.getElementById('rGr').textContent=`Grade ${g}`;}
+
+function renderHOF(){
+  const students=[{n:'Fatima Zahra',s:'Federal • KHI',c:'Gr.10',sc:980,col:'#F43F5E'},{n:'Ali Hassan',s:'Punjab • LHR',c:'Gr.10',sc:965,col:'#5B6CF9'},{n:'Zara Khan',s:'Federal • ISB',c:'Gr.9',sc:942,col:'#8B5CF6'},{n:'Omar Farooq',s:'Lahore Board',c:'Gr.10',sc:918,col:'#10B981'},{n:'Sara Malik',s:'Sargodha',c:'Gr.9',sc:895,col:'#F59E0B'},{n:'Hassan (BHS)',s:'Beaconhouse • LHR',c:'Gr.10',sc:871,col:'#06B6D4'},{n:'Ayesha (Allied)',s:'Allied • FSD',c:'Gr.8',sc:854,col:'#F59E0B'},{n:'Ahmed Ali (Aap)',s:'Federal • LHR',c:'Gr.9',sc:720,col:'#5B6CF9'}];
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div class="hcard" style="background:linear-gradient(135deg,#F59E0B,#F43F5E)">
+      <div style="font-size:26px;position:relative;z-index:1">🌟</div>
+      <div style="font-size:18px;font-weight:800;position:relative;z-index:1">Hall of Fame</div>
+      <div style="font-size:11px;opacity:.8;position:relative;z-index:1">Pakistan ke sabse mehnat kash students!</div>
+    </div>
+    <div style="background:var(--blue-t);border:1px solid rgba(91,108,249,.2);border-radius:14px;padding:13px;font-size:12.5px;">🏆 <strong>Monthly Top 3</strong> ko FREE 1-month Premium milega!</div>
+    <div class="hof-filters">${['🌍 Sab','Federal','Punjab','Sargodha','Lahore','Gr.10','Gr.9','Private'].map((f,i)=>`<div class="hfc${i===0?' sel':''}" onclick="T('Filter: ${f}');this.parentElement.querySelectorAll('.hfc').forEach(c=>c.classList.remove('sel'));this.classList.add('sel')">${f}</div>`).join('')}</div>
+    <div class="top3-row">${[1,0,2].map(i=>students[i]?`<div class="t3i"><div class="t3av" style="width:${i===0?84:66}px;height:${i===0?84:66}px;font-size:${i===0?17:14}px;background:linear-gradient(135deg,${students[i].col},${students[i].col}99)">${i===0?'<span class="t3crown">👑</span>':''}${students[i].n.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div style="font-size:11px;font-weight:800;color:var(--muted)">#${i===0?1:i===1?2:3}</div><div style="font-size:11px;font-weight:800;color:var(--text);text-align:center">${students[i].n.split(' ')[0]}</div><div style="font-size:10px;color:var(--blue);font-weight:700">${students[i].sc} pts</div></div>`:'').join('')}</div>
+    <div>${students.map((s,i)=>`<div class="lb-row${s.n.includes('Aap')?' me':''}"><div class="lb-rank">${i<3?['🥇','🥈','🥉'][i]:s.n.includes('Aap')?'#47':i+1}</div><div class="lb-av" style="background:linear-gradient(135deg,${s.col},${s.col}99)">${s.n.split(' ').map(w=>w[0]).join('').slice(0,2)}</div><div style="flex:1"><div class="lb-name">${s.n}</div><div class="lb-meta">${s.c} • ${s.s}</div></div><div class="lb-sc">${s.sc}</div></div>`).join('')}</div>
+    <div class="card" style="text-align:center">
+      <div style="font-size:13px;font-weight:800;margin-bottom:4px">Aapki Profile Card 📲</div>
+      <div style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border-radius:14px;padding:16px;color:#fff;margin:10px 0;text-align:left">
+        <div style="font-size:18px;font-weight:800">Ahmed Ali 🎓</div>
+        <div style="font-size:11px;opacity:.8;margin-top:2px">Grade 9 • Federal Board • Lahore</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px">
+          <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800">70%</div><div style="font-size:10px;opacity:.7">Ready</div></div>
+          <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800">#47</div><div style="font-size:10px;opacity:.7">Rank</div></div>
+          <div style="background:rgba(255,255,255,.15);border-radius:8px;padding:8px;text-align:center"><div style="font-size:18px;font-weight:800">5🔥</div><div style="font-size:10px;opacity:.7">Streak</div></div>
+        </div>
+      </div>
+      <button onclick="T('Profile card WhatsApp par share hua! 🚀')" style="width:100%;background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:12px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">📲 WhatsApp Par Share Karo!</button>
+    </div>
+    <button class="bbtn" onclick="renderHome()">← Home</button>
+  </div>`;}
+
+function renderNotif(){
+  const notifs=[{ico:'🔥',bg:'var(--amber-t)',t:'5 din ki streak! Keep it up!',s:'Aaj bhi parho — streak mat toRo',tm:'Abhi',u:true},{ico:'🏆',bg:'var(--blue-t)',t:'#47 se #45 par aa gaye!',s:'2 positions upar — mehnat rang la rahi hai',tm:'2 ghante pehle',u:true},{ico:'⏰',bg:'var(--rose-t)',t:'Board exam mein 47 din baqi!',s:'Chemistry par zyada focus karo',tm:'Aaj subah',u:true},{ico:'📝',bg:'var(--green-t)',t:'New quiz: Physics Ch.2',s:'AI ne aapke liye special quiz banaya',tm:'Kal',u:false},{ico:'💎',bg:'var(--gold-t)',t:'Premium offer: 20% off!',s:'Is hafte ke liye special discount',tm:'2 din pehle',u:false},{ico:'👨‍👩‍👧',bg:'var(--violet-t)',t:'Ammi ne aapki progress dekhi',s:'Physics result — 82% — shaabaash!',tm:'3 din pehle',u:false}];
+  document.getElementById('sCont').innerHTML=`
+  <div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div class="sh" style="margin-bottom:0">Notifications 🔔</div><span style="font-size:12px;color:var(--blue);font-weight:700;cursor:pointer" onclick="T('Sab clear!')">Sab Clear</span></div>
+    ${notifs.map(n=>`<div class="notif-item${n.u?' unread':''}" onclick="T('${n.t}')"><div class="n-ico" style="background:${n.bg}">${n.ico}</div><div style="flex:1"><div class="n-t">${n.t}</div><div class="n-s">${n.s}</div><div class="n-tm">${n.tm}</div></div>${n.u?'<div style="width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:4px;"></div>':''}</div>`).join('')}
+    <button class="bbtn" onclick="renderHome()">← Home</button>
+  </div>`;}
+
+function renderSettings(){
+  document.getElementById('sCont').innerHTML=`
+  <div>
+    <div class="sh" style="margin-bottom:16px">Settings ⚙️</div>
+    <div class="ss-title">Profile</div>
+    <div class="srow" onclick="T('Profile edit!')"><div class="srow-ico" style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6);font-size:14px;font-weight:800;color:#fff;">AA</div><div style="flex:1"><div class="srow-t">Ahmed Ali</div><div class="srow-s">Grade 9 • Federal • Free Plan</div></div><div style="color:var(--muted)">›</div></div>
+    <div class="srow" onclick="sTab('premium')"><div class="srow-ico" style="background:var(--gold-t)">💎</div><div style="flex:1"><div class="srow-t">Premium Upgrade</div><div class="srow-s">Unlimited AI, no ads, advanced</div></div><div style="background:var(--gold-t);color:var(--gold);border-radius:100px;padding:3px 10px;font-size:10px;font-weight:800;">Rs.149/mo</div></div>
+    <div style="margin-top:16px"><div class="ss-title">App</div></div>
+    <div class="srow"><div class="srow-ico" style="background:var(--blue-t)">🌙</div><div style="flex:1"><div class="srow-t">Dark Mode</div><div class="srow-s">Raat ko aankhen thakti nahi</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off');toggleTheme()"></button></div>
+    <div class="srow" onclick="T('Zuban!')"><div class="srow-ico" style="background:var(--cyan-t)">🌐</div><div style="flex:1"><div class="srow-t">Language / زبان</div><div class="srow-s">Roman Urdu (selected)</div></div><div style="color:var(--muted)">›</div></div>
+    <div class="srow" onclick="T('Font size!')"><div class="srow-ico" style="background:var(--green-t)">Aa</div><div style="flex:1"><div class="srow-t">Font Size</div><div class="srow-s">Medium</div></div><div style="color:var(--muted)">›</div></div>
+    <div style="margin-top:16px"><div class="ss-title">Notifications</div></div>
+    <div class="srow"><div class="srow-ico" style="background:var(--amber-t)">🔔</div><div style="flex:1"><div class="srow-t">Study Reminders</div><div class="srow-s">Har roz 6 PM par reminder</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button></div>
+    <div class="srow"><div class="srow-ico" style="background:var(--rose-t)">🔥</div><div style="flex:1"><div class="srow-t">Streak Alerts</div><div class="srow-s">Streak tutne se pehle alert</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button></div>
+    <div class="srow"><div class="srow-ico" style="background:var(--violet-t)">🏆</div><div style="flex:1"><div class="srow-t">Rank Updates</div><div class="srow-s">Jab rank change ho</div></div><button class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button></div>
+    <div style="margin-top:16px"><div class="ss-title">Exam</div></div>
+    <div class="srow" onclick="T('Exam date set karo!')"><div class="srow-ico" style="background:var(--rose-t)">📅</div><div style="flex:1"><div class="srow-t">Exam Date</div><div class="srow-s">March 25, 2025 (47 din baqi)</div></div><div style="color:var(--muted)">›</div></div>
+    <div class="srow" onclick="T('Board change!')"><div class="srow-ico" style="background:var(--blue-t)">🏛</div><div style="flex:1"><div class="srow-t">My Board</div><div class="srow-s">Federal Board</div></div><div style="color:var(--muted)">›</div></div>
+    <div style="margin-top:16px"><div class="ss-title">Account</div></div>
+    <div class="srow" onclick="T('Logout!')"><div class="srow-ico" style="background:var(--rose-t)">🚪</div><div style="flex:1"><div class="srow-t" style="color:var(--rose)">Logout</div><div class="srow-s">Account se bahar jao</div></div><div style="color:var(--muted)">›</div></div>
+    <button class="bbtn" onclick="renderHome()">← Home</button>
+  </div>`;}
+
+function renderPremium(){
+  document.getElementById('sCont').innerHTML=`
+  <div>
+    <div class="prem-hero"><div style="font-size:52px;margin-bottom:12px">💎</div><div style="font-size:24px;font-weight:800">Smart Ustaad Premium</div><div style="font-size:13px;opacity:.85;margin-top:6px">Poori tayyari — koi limit nahi!</div></div>
+    <div class="plan-card" onclick="T('Monthly plan selected!')">
+      <div style="font-size:18px;font-weight:800">Monthly Plan</div>
+      <div class="plan-price">Rs. 149 <span>/ mahina</span></div>
+      <ul class="plan-features"><li>Unlimited AI Tutor chats</li><li>Unlimited Quiz generation</li><li>Unlimited Handwriting checks</li><li>Sab boards access</li><li>No ads</li></ul>
+    </div>
+    <div class="plan-card rec" onclick="T('Trimesterly plan selected!')">
+      <div class="plan-rb">⭐ Best Value</div>
+      <div style="font-size:18px;font-weight:800">3 Mahine Plan</div>
+      <div class="plan-price">Rs. 349 <span>/ 3 mahine</span></div>
+      <div class="plan-save">Rs.98 bachao — 22% off!</div>
+      <ul class="plan-features"><li>Sab monthly features</li><li>Priority AI responses</li><li>Advanced analytics</li><li>Parent progress reports</li><li>Offline book reading</li></ul>
+    </div>
+    <button class="prem-btn" onclick="T('Payment — JazzCash, EasyPaisa, Card!')">💳 Abhi Subscribe Karo</button>
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;margin-bottom:12px">Free vs Premium</div>
+      <div class="comp-row"><span class="cf">AI Tutor</span><span class="ct" style="color:var(--muted)">10/day</span><span class="ct" style="color:var(--green)">∞</span></div>
+      <div class="comp-row"><span class="cf">Quizzes</span><span class="ct" style="color:var(--muted)">2/day</span><span class="ct" style="color:var(--green)">∞</span></div>
+      <div class="comp-row"><span class="cf">Boards</span><span class="ct" style="color:var(--muted)">1 only</span><span class="ct" style="color:var(--green)">All 4</span></div>
+      <div class="comp-row"><span class="cf">Ads</span><span class="ct">✅ Haan</span><span class="ct" style="color:var(--green)">❌ Nahi</span></div>
+      <div class="comp-row"><span class="cf">Full Papers</span><span class="ct">🔒</span><span class="ct" style="color:var(--green)">✓</span></div>
+      <div class="comp-row"><span class="cf">Analytics</span><span class="ct">Basic</span><span class="ct" style="color:var(--green)">Advanced</span></div>
+    </div>
+    <button class="bbtn" onclick="renderHome()">← Home</button>
+  </div>`;}
+
+// PARENT
+function pTab(tab,el){setActive('#pApp',el);renderParent(tab);}
+function renderParent(tab='overview'){
+  document.getElementById('pCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div class="child-row"><div class="cchip active">👦 Ahmed Ali</div><div class="cchip" onclick="T('Sara selected!')">👧 Sara</div><div class="cchip" onclick="T('Bacha add karo!')">+ Add</div></div>
+    <div class="hcard" style="background:linear-gradient(135deg,#F43F5E,#9333EA)">
+      <div style="font-size:22px;position:relative;z-index:1">👦</div>
+      <div style="font-size:18px;font-weight:800;position:relative;z-index:1">Ahmed Ali ki Progress</div>
+      <div style="font-size:11px;opacity:.75;position:relative;z-index:1">Grade 9 • Federal Board</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;position:relative;z-index:1">
+        <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:9px;text-align:center"><div style="font-size:17px;font-weight:800">70%</div><div style="font-size:10px;opacity:.7">Exam Ready</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:9px;text-align:center"><div style="font-size:17px;font-weight:800">5🔥</div><div style="font-size:10px;opacity:.7">Streak</div></div>
+        <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:9px;text-align:center"><div style="font-size:17px;font-weight:800">#47</div><div style="font-size:10px;opacity:.7">Rank</div></div>
+      </div>
+    </div>
+    <div style="background:var(--rose-t);border:1px solid rgba(244,63,94,.2);border-radius:14px;padding:13px;display:flex;gap:10px">
+      <span style="font-size:20px">⚠️</span><div><div style="font-size:13px;font-weight:800;color:var(--rose)">Dhyan Chahiye!</div><div style="font-size:11px;color:var(--muted);margin-top:2px">Ahmed ne Chemistry mein 35% score kiya. Aaj raat saath parho.</div></div>
+    </div>
+    <div class="card">
+      <div class="sh" style="margin-bottom:11px">Subject Progress</div>
+      ${[['Physics',82,'#5B6CF9'],['Math',75,'#10B981'],['English',88,'#06B6D4'],['Biology',48,'#F59E0B'],['Chemistry',35,'#F43F5E']].map(([s,p,c])=>`<div class="sp-row"><div class="sp-hdr"><span class="sp-n">${s}</span><span class="sp-p" style="color:${c}">${p}%</span></div><div class="sp-t"><div class="sp-f" style="width:${p}%;background:${c}"></div></div></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="sh" style="margin-bottom:12px">Aaj ki Activity 🕐</div>
+      <div class="at-item"><div class="at-dot" style="background:var(--blue-t)">📝</div><div><div style="font-size:12px;font-weight:800">Physics Quiz diya</div><div style="font-size:11px;color:var(--muted)">Score: 4/5 — Grade A 🌟</div><div style="font-size:10px;color:var(--muted)">2 ghante pehle</div></div></div>
+      <div class="at-item"><div class="at-dot" style="background:var(--green-t)">🤖</div><div><div style="font-size:12px;font-weight:800">AI Tutor use kiya</div><div style="font-size:11px;color:var(--muted)">Chemistry — 5 sawaal</div><div style="font-size:10px;color:var(--muted)">3 ghante pehle</div></div></div>
+      <div class="at-item"><div class="at-dot" style="background:var(--amber-t)">📅</div><div><div style="font-size:12px;font-weight:800">Study Planner complete kiya</div><div style="font-size:11px;color:var(--muted)">1/5 tasks done</div><div style="font-size:10px;color:var(--muted)">Aaj</div></div></div>
+    </div>
+    <div style="background:var(--blue-t);border:1px solid rgba(91,108,249,.2);border-radius:14px;padding:13px;font-size:12.5px">🔗 <strong>Family Code:</strong> <span class="mono" style="font-size:15px;font-weight:700;color:var(--blue)">A7K3</span></div>
+    <button onclick="T('Monthly report WhatsApp par bheja!')" style="width:100%;background:linear-gradient(135deg,#F43F5E,#9333EA);border:none;border-radius:100px;padding:13px;font-size:15px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;cursor:pointer;">📄 Monthly Report Bhejo</button>
+    <button class="bbtn" onclick="S('roleSelect')">← Demo Menu</button>
+  </div>`;}
+
+// TEACHER
+function tTab(tab,el){setActive('#tApp',el);renderTeacher(tab);}
+function renderTeacher(tab='classes'){
+  document.getElementById('tCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div class="hcard" style="background:linear-gradient(135deg,#10B981,#059669)">
+      <div style="font-size:24px;position:relative;z-index:1">👨‍🏫</div>
+      <div style="font-size:18px;font-weight:800;position:relative;z-index:1">Sir Rashid Ahmed</div>
+      <div style="font-size:11px;opacity:.75;position:relative;z-index:1">Physics Teacher • City Model School</div>
+      <div style="display:flex;gap:8px;margin-top:11px;position:relative;z-index:1">
+        <span style="background:rgba(255,255,255,.2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700">3 Classes</span>
+        <span style="background:rgba(255,255,255,.2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700">87 Students</span>
+        <span style="background:rgba(255,255,255,.2);border-radius:100px;padding:4px 12px;font-size:11px;font-weight:700">Avg: 74%</span>
+      </div>
+    </div>
+    ${[['9-A Physics','Grade 9A • 32 students','78%','#5B6CF9'],['9-B Physics','Grade 9B • 28 students','65%','#8B5CF6'],['10-A Physics','Grade 10A • 27 students','82%','#10B981']].map(([n,d,avg,c])=>`
+    <div class="card" onclick="T('${n} detail!')" style="cursor:pointer">
+      <div style="display:flex;align-items:center;gap:11px;margin-bottom:11px">
+        <div style="width:42px;height:42px;border-radius:11px;background:${c}20;display:flex;align-items:center;justify-content:center;font-size:20px">📚</div>
+        <div><div style="font-size:14px;font-weight:800">${n}</div><div style="font-size:11px;color:var(--muted)">${d}</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <div style="background:var(--bg);border-radius:8px;padding:7px;text-align:center"><div style="font-size:15px;font-weight:900;color:${c}">${avg}</div><div style="font-size:10px;color:var(--muted)">Avg Score</div></div>
+        <div style="background:var(--bg);border-radius:8px;padding:7px;text-align:center"><div style="font-size:15px;font-weight:900;color:var(--green)">Active</div><div style="font-size:10px;color:var(--muted)">Status</div></div>
+      </div>
+    </div>`).join('')}
+    <div class="card">
+      <div class="sh" style="margin-bottom:12px">9-A Students</div>
+      ${[['AA','Ahmed Ali','#47 Nat • 82%','#5B6CF9'],['SM','Sara Malik','#123 Nat • 75%','#10B981'],['HK','Hassan Khan','#289 Nat • 65%','#F59E0B'],['AN','Ayesha Noor','#412 Nat • 48%','#F43F5E']].map(([av,n,m,c])=>`
+      <div style="display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid var(--border)">
+        <div style="width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,${c},${c}99);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0">${av}</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:800">${n}</div><div style="font-size:10px;color:var(--muted)">${m}</div></div>
+        <button onclick="T('${n} ko quiz assign kiya!')" style="background:var(--green);border:none;border-radius:8px;padding:5px 11px;font-size:11px;font-weight:800;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">Assign</button>
+      </div>`).join('')}
+    </div>
+    <button onclick="T('Puri 9-A ko quiz assign!')" style="width:100%;background:var(--green-t);border:none;border-radius:100px;padding:12px;font-size:14px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:var(--green);cursor:pointer;">📋 Puri Class Ko Quiz Assign Karo</button>
+    <button class="bbtn" onclick="S('roleSelect')">← Demo Menu</button>
+  </div>`;}
+
+// ADMIN
+function aTab(tab,el){setActive('#aApp',el);renderAdmin(tab);}
+function renderAdmin(tab='overview'){
+  document.getElementById('aCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div class="hcard" style="background:linear-gradient(135deg,#1A1D3B,#5B6CF9)">
+      <div style="font-family:'Noto Nastaliq Urdu',serif;font-size:20px;direction:rtl;line-height:1.8;position:relative;z-index:1">سمارٹ استاد — ایڈمن</div>
+      <div class="admin-kpis">
+        <div class="akpi"><div class="akpi-v">1,247</div><div class="akpi-l">Users</div></div>
+        <div class="akpi"><div class="akpi-v">342</div><div class="akpi-l">Daily Active</div></div>
+        <div class="akpi"><div class="akpi-v">89</div><div class="akpi-l">Premium</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sh" style="margin-bottom:12px">🤖 API Usage Aaj</div>
+      <div class="am-row"><span>Gemini API</span><span class="am-val">1,247/5,000</span></div><div class="am-track"><div class="am-fill" style="width:25%;background:linear-gradient(90deg,#10B981,#5B6CF9)"></div></div>
+      <div class="am-row"><span>Firebase Storage</span><span class="am-val">234 MB / 1 GB</span></div><div class="am-track"><div class="am-fill" style="width:23%;background:#F59E0B"></div></div>
+      <div class="am-row"><span>Cost Aaj</span><span class="am-val">$0.12</span></div><div class="am-track"><div class="am-fill" style="width:12%;background:#10B981"></div></div>
+    </div>
+    <div class="card">
+      <div class="sh" style="margin-bottom:12px">📚 Boards & Schools</div>
+      ${[['Federal Board','Gr.5-10 • 6 subjects','on'],['Punjab PCTB','Gr.5-10 • 6 subjects','on'],['Sargodha Board','Gr.9-10 • 4 subjects','on'],['Lahore Board','Setup pending','off'],['Beaconhouse','Book upload active','on'],['Allied School','Book upload active','on']].map(([b,d,s])=>`
+      <div class="board-item"><div class="bi-l"><h4>${b}</h4><p>${d}</p></div><button class="tog-btn ${s==='on'?'tog-on':'tog-off'}" onclick="T('${b} status changed!')">${s==='on'?'✓ Active':'⏳ Pending'}</button></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="sh" style="margin-bottom:12px">👥 Recent Users</div>
+      ${[['AK','Ahmed Khan','Gr.10 • Federal • Student','premium','#5B6CF9'],['SF','Sara Fatima','Gr.8 • Punjab • Student','free','#F43F5E'],['SR','Sir Rashid','Teacher • Physics','teacher','#10B981'],['BH','Hassan (BHS)','Gr.9 • Beaconhouse','free','#06B6D4']].map(([av,n,m,b,c])=>`
+      <div class="ur-row"><div class="ur-av" style="background:linear-gradient(135deg,${c},${c}99)">${av}</div><div style="flex:1"><div style="font-size:12px;font-weight:800">${n}</div><div style="font-size:10px;color:var(--muted)">${m}</div></div><span class="ub ${b==='premium'?'ub-p':b==='teacher'?'ub-t':'ub-f'}">${b}</span></div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="sh" style="margin-bottom:12px">💰 Revenue</div>
+      <div class="rev-grid">
+        <div class="rev-c" style="background:var(--green-t)"><div class="rev-v" style="color:var(--green)">Rs.13,261</div><div class="rev-l">Is Mahine</div></div>
+        <div class="rev-c" style="background:var(--blue-t)"><div class="rev-v" style="color:var(--blue)">89</div><div class="rev-l">Premium Users</div></div>
+        <div class="rev-c" style="background:var(--gold-t)"><div class="rev-v" style="color:var(--gold)">Rs.2,890</div><div class="rev-l">Ad Revenue</div></div>
+        <div class="rev-c" style="background:var(--violet-t)"><div class="rev-v" style="color:var(--violet)">3</div><div class="rev-l">School Licenses</div></div>
+      </div>
+    </div>
+    <button class="bbtn" onclick="S('roleSelect')">← Demo Menu</button>
+  </div>`;}
+
+// ===== TOOLS HUB =====
+const wordOfDay = {
+  word: 'Perseverance',
+  urdu: 'استقامت / ثابت قدمی',
+  roman: 'Istaqamat / Thabit Qadmi',
+  meaning: 'Mushkilon ke bawajood koshish jaari rakhna',
+  example: 'His perseverance in studies led him to top the board exams.',
+  exampleUr: 'اس کی استقامت نے اسے بورڈ امتحان میں اول پوزیشن دلائی۔'
+};
+
+const subjectGlossary = {
+  Physics: [
+    {en:'Inertia',ur:'جمود',rm:'Jamood',def:'Ek jism ki apni halat barqarar rakhne ki khasiyat'},
+    {en:'Velocity',ur:'سرعت',rm:'Suraat',def:'Displacement per unit time with direction'},
+    {en:'Acceleration',ur:'اسراع',rm:'Israa',def:'Rate of change of velocity'},
+    {en:'Force',ur:'قوت',rm:'Quwwat',def:'Push ya pull jo jism par lagti hai'},
+    {en:'Momentum',ur:'زخم',rm:'Miqdar-e-Harkat',def:'Mass × Velocity (p = mv)'},
+    {en:'Friction',ur:'رگڑ',rm:'Ragad',def:'Do surfaces ke darmiyan mukhalfat ki quwwat'},
+    {en:'Gravity',ur:'کشش ثقل',rm:'Kashish-e-Saqal',def:'Zameen ki khinchne ki taqat'},
+    {en:'Pressure',ur:'دباؤ',rm:'Dabaao',def:'Force per unit area (P = F/A)'},
+    {en:'Work',ur:'کام',rm:'Kaam',def:'Force × displacement (W = Fd)'},
+    {en:'Power',ur:'طاقت',rm:'Taaqat',def:'Work done per unit time (P = W/t)'},
+  ],
+  Chemistry: [
+    {en:'Atom',ur:'ایٹم',rm:'Atom',def:'Kisi bhi element ka sabse chota zarrah'},
+    {en:'Molecule',ur:'سالمہ',rm:'Saalma',def:'Do ya zyada atoms ka milaap'},
+    {en:'Element',ur:'عنصر',rm:'Unsar',def:'Aik hi qisam ke atoms se bana madda'},
+    {en:'Compound',ur:'مرکب',rm:'Murakkab',def:'Do ya zyada elements ka chemical milaap'},
+    {en:'Valency',ur:'تکافؤ',rm:'Takafu',def:'Kisi element ki combining power'},
+    {en:'Oxidation',ur:'آکسیکرن',rm:'Oxidation',def:'Electron khone ka amal'},
+    {en:'Reduction',ur:'احیاء',rm:'Ihyaa',def:'Electron haasil karne ka amal'},
+    {en:'Catalyst',ur:'اتپرک',rm:'Utprak',def:'Reaction speed karne wala madda jo khud nahi badalata'},
+    {en:'Acid',ur:'تیزاب',rm:'Tezaab',def:'H+ ions dene wala madda, pH < 7'},
+    {en:'Base',ur:'اساس',rm:'Asaas',def:'OH- ions dene wala madda, pH > 7'},
+  ],
+  Biology: [
+    {en:'Cell',ur:'خلیہ',rm:'Khaliya',def:'Zindagi ki bunyadi ikaai'},
+    {en:'Nucleus',ur:'مرکزہ',rm:'Markaza',def:'Cell ka control center — DNA hota hai'},
+    {en:'Photosynthesis',ur:'ضیائی تالیف',rm:'Ziyai Taleef',def:'Poday sunlight se khana banate hain'},
+    {en:'Respiration',ur:'تنفس',rm:'Tanaffus',def:'Oxygen se energy banana'},
+    {en:'Osmosis',ur:'اخماج',rm:'Ikhmaj',def:'Paani ka kam concentration se zyada ki taraf safar'},
+    {en:'Chromosome',ur:'کروموسوم',rm:'Chromosome',def:'DNA ka structured form — genes hote hain'},
+    {en:'Enzyme',ur:'خامرہ',rm:'Khaamra',def:'Biological catalyst — reactions speed karta hai'},
+    {en:'Hormone',ur:'ہارمون',rm:'Hormone',def:'Chemical messenger — body functions control karta hai'},
+    {en:'Neuron',ur:'عصبی خلیہ',rm:'Asabi Khaliya',def:'Nervous system ki ikaai — signals pohanchata hai'},
+    {en:'Mitosis',ur:'میٹوسس',rm:'Mitosis',def:'Normal cell division — 2 identical cells banti hain'},
+  ],
+  Math: [
+    {en:'Algebra',ur:'الجبرا',rm:'Algebra',def:'Symbols aur haroof se calculations'},
+    {en:'Integer',ur:'صحیح عدد',rm:'Sahih Adad',def:'Poora adad — fraction nahi'},
+    {en:'Coefficient',ur:'گنانک',rm:'Gunaank',def:'Variable ke sath likha hua number'},
+    {en:'Polynomial',ur:'کثیر رقمی',rm:'Kaseer Raqmi',def:'Ek ya zyada terms ka milaap'},
+    {en:'Theorem',ur:'نظریہ',rm:'Nazariya',def:'Prove kiya hua mathematical statement'},
+    {en:'Hypotenuse',ur:'وتر',rm:'Watar',def:'Right triangle ki sab se bari side'},
+    {en:'Perimeter',ur:'محیط',rm:'Muheet',def:'Shape ki bairi boundary ki lambai'},
+    {en:'Diameter',ur:'قطر',rm:'Qatar',def:'Circle ke darmiyaan se guzarne wali line'},
+    {en:'Ratio',ur:'نسبت',rm:'Nisbat',def:'Do quantities ka muqabla'},
+    {en:'Percentage',ur:'فیصد',rm:'Feesad',def:'Fraction out of 100'},
+  ]
+};
+
+// Offline dictionary — 80 common words students need
+const miniDict = {
+  // English to Urdu
+  'absence':'غیر حاضری (Ghair Hazri)',
+  'acceleration':'اسراع (Israa) — speed mein izafa',
+  'acid':'تیزاب (Tezaab) — pH < 7',
+  'adapt':'ڈھلنا (Dhalna) — mahaul ke mutabiq hona',
+  'address':'پتہ (Pata)',
+  'advantage':'فائدہ (Faida)',
+  'affect':'اثر ڈالنا (Asar Daalna)',
+  'analysis':'تجزیہ (Tajzia)',
+  'apply':'لگانا (Lagaana)',
+  'atmosphere':'فضا (Faza) — hawa ka ghilaf',
+  'base':'اساس (Asaas) — chemistry mein pH > 7',
+  'biology':'حیاتیات (Hayatiyat)',
+  'calculate':'حساب لگانا (Hisaab lagaana)',
+  'catalyst':'اتپرک (Utprak)',
+  'cause':'وجہ (Wajah)',
+  'cell':'خلیہ (Khaliya)',
+  'chemical':'کیمیائی (Kimyai)',
+  'circuit':'برقی دائرہ (Barqi Daira)',
+  'classify':'ترتیب دینا (Tarteeb Dena)',
+  'compound':'مرکب (Murakkab)',
+  'conclusion':'نتیجہ (Nateeja)',
+  'conductor':'موصل (Mausil)',
+  'constant':'مستقل (Mustaqil)',
+  'current':'برقی رو (Barqi Rau)',
+  'define':'تعریف کرنا (Taarif Karna)',
+  'demonstrate':'ثابت کرنا (Sabit Karna)',
+  'density':'کثافت (Kasaafat)',
+  'describe':'بیان کرنا (Bayaan Karna)',
+  'diagram':'خاکہ (Khaaka)',
+  'diffusion':'پھیلاؤ (Phailao)',
+  'digest':'ہضم کرنا (Hazm Karna)',
+  'electricity':'بجلی (Bijli)',
+  'element':'عنصر (Unsar)',
+  'energy':'توانائی (Tawanai)',
+  'environment':'ماحول (Mahool)',
+  'equation':'مساوات (Musawaat)',
+  'evaluate':'جانچنا (Jaanchna)',
+  'evidence':'ثبوت (Saboot)',
+  'experiment':'تجربہ (Tajruba)',
+  'explain':'وضاحت کرنا (Wazahat Karna)',
+  'factor':'عامل (Aamil)',
+  'force':'قوت (Quwwat)',
+  'formula':'فارمولا (Formula)',
+  'frequency':'تعدد (Taadud)',
+  'friction':'رگڑ (Ragad)',
+  'function':'کام (Kaam) / وظیفہ (Wazifa)',
+  'gas':'گیس (Gas)',
+  'gravity':'کشش ثقل (Kashish-e-Saqal)',
+  'heat':'حرارت (Hararat)',
+  'hypothesis':'قیاس (Qiyas)',
+  'identify':'پہچاننا (Pehchaanna)',
+  'illustrate':'مثال دینا (Misaal Dena)',
+  'inertia':'جمود (Jamood)',
+  'insulator':'غیر موصل (Ghair Mausil)',
+  'interpret':'تشریح کرنا (Tashreeh Karna)',
+  'investigate':'تحقیق کرنا (Tahqeeq Karna)',
+  'justify':'دلیل دینا (Daleel Dena)',
+  'kinetic':'حرکی (Harki)',
+  'label':'نام لکھنا (Naam Likhna)',
+  'law':'قانون (Qaanoon)',
+  'light':'روشنی (Roshni)',
+  'liquid':'مائع (Mayi)',
+  'mass':'کمیت (Kamiyat)',
+  'matter':'مادہ (Maada)',
+  'measure':'پیمائش (Paimaish)',
+  'mechanism':'طریقہ کار (Tariqa-e-Kaar)',
+  'mixture':'آمیزہ (Aameza)',
+  'molecule':'سالمہ (Saalma)',
+  'momentum':'مقدار حرکت (Miqdar-e-Harkat)',
+  'nucleus':'مرکزہ (Markaza)',
+  'observation':'مشاہدہ (Mushahida)',
+  'organism':'جاندار (Jaandar)',
+  'osmosis':'اخماج (Ikhmaj)',
+  'oxygen':'آکسیجن (Oxygen)',
+  'photosynthesis':'ضیائی تالیف (Ziyai Taleef)',
+  'potential':'امکانی (Imkani)',
+  'pressure':'دباؤ (Dabaao)',
+  'process':'عمل (Amal)',
+  'property':'خاصیت (Khasiyat)',
+  'reaction':'ردعمل (Rad-e-Amal)',
+  'resistance':'مزاحمت (Muzaahamat)',
+  'respiration':'تنفس (Tanaffus)',
+  'solid':'ٹھوس (Thoos)',
+  'solution':'محلول (Mahool)',
+  'speed':'رفتار (Raftar)',
+  'substance':'مادہ (Maada)',
+  'temperature':'درجہ حرارت (Darja-e-Hararat)',
+  'theory':'نظریہ (Nazariya)',
+  'tissue':'بافت (Baaft)',
+  'transfer':'منتقل کرنا (Muntaqil Karna)',
+  'velocity':'سرعت (Suraat)',
+  'voltage':'وولٹیج (Voltage)',
+  'volume':'حجم (Hajam)',
+  'wavelength':'طول موج (Tool-e-Mauj)',
+  'weight':'وزن (Wazan)',
+  'work':'کام (Kaam) — F×d'
+};
+
+function renderTools(){
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px" id="toolsHome">
+
+    <!-- WORD OF THE DAY -->
+    <div style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border-radius:20px;padding:20px;color:#fff;position:relative;overflow:hidden">
+      <div style="position:absolute;right:-10px;top:-10px;font-size:80px;opacity:.08">📖</div>
+      <div style="font-size:11px;font-weight:700;opacity:.75;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">🔊 Word of the Day</div>
+      <div style="font-size:26px;font-weight:800">${wordOfDay.word}</div>
+      <div style="font-family:'Noto Nastaliq Urdu',serif;font-size:18px;direction:rtl;line-height:2;margin-top:2px">${wordOfDay.urdu}</div>
+      <div style="font-size:12px;opacity:.8;margin-top:4px">${wordOfDay.roman}</div>
+      <div style="background:rgba(255,255,255,.12);border-radius:12px;padding:10px 14px;margin-top:12px;font-size:12px;line-height:1.6">${wordOfDay.meaning}</div>
+      <div style="font-size:11px;opacity:.7;margin-top:8px;font-style:italic">"${wordOfDay.example}"</div>
+    </div>
+
+    <!-- TOOLS GRID -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:11px">
+      <div class="qgc" onclick="showTool('dict')">
+        <div class="qgc-ico">📖</div>
+        <div class="qgc-t">Dictionary</div>
+        <div class="qgc-s">Eng ↔ Urdu</div>
+        <span class="qgc-b" style="background:var(--blue-t);color:var(--blue)">80+ words</span>
+      </div>
+      <div class="qgc" onclick="showTool('translate')">
+        <div class="qgc-ico">🔄</div>
+        <div class="qgc-t">Translator</div>
+        <div class="qgc-s">Paragraph translate</div>
+        <span class="qgc-b" style="background:var(--violet-t);color:var(--violet)">AI Powered</span>
+      </div>
+      <div class="qgc" onclick="showTool('glossary')">
+        <div class="qgc-ico">📚</div>
+        <div class="qgc-t">Subject Glossary</div>
+        <div class="qgc-s">Phy/Chem/Bio/Math</div>
+        <span class="qgc-b" style="background:var(--green-t);color:var(--green)">40 terms</span>
+      </div>
+      <div class="qgc" onclick="showTool('vocab')">
+        <div class="qgc-ico">🧠</div>
+        <div class="qgc-t">Vocab Quiz</div>
+        <div class="qgc-s">Words yaad karo</div>
+        <span class="qgc-b" style="background:var(--amber-t);color:var(--amber)">Fun!</span>
+      </div>
+    </div>
+
+    <!-- QUICK SEARCH -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">⚡ Quick Dictionary Search</div>
+      <div style="display:flex;gap:8px">
+        <input id="quickSearch" class="fi" placeholder="Koi bhi word likho — Eng ya Urdu..." oninput="quickDict()" style="flex:1;border-radius:100px;padding:11px 16px;">
+        <button onclick="quickDict()" style="background:var(--blue);border:none;border-radius:100px;padding:11px 18px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap">Search</button>
+      </div>
+      <div id="quickResult" style="margin-top:12px"></div>
+    </div>
+
+    <button class="bbtn" onclick="renderHome()">← Home</button>
+  </div>`;
+}
+
+function quickDict(){
+  const q = document.getElementById('quickSearch').value.trim().toLowerCase();
+  const res = document.getElementById('quickResult');
+  if(!q){res.innerHTML='';return;}
+  
+  const found = miniDict[q];
+  if(found){
+    res.innerHTML=`
+    <div style="background:var(--blue-t);border:1px solid rgba(91,108,249,.2);border-radius:14px;padding:14px 16px">
+      <div style="font-size:18px;font-weight:800;color:var(--blue)">${q.charAt(0).toUpperCase()+q.slice(1)}</div>
+      <div style="font-size:14px;color:var(--text);margin-top:6px;line-height:1.7">${found}</div>
+    </div>`;
+  } else {
+    // fuzzy match
+    const matches = Object.keys(miniDict).filter(k=>k.startsWith(q.slice(0,3)));
+    if(matches.length){
+      res.innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">Yeh mila nahi — kya in mein se koi chahiye?</div>`
+        +matches.slice(0,4).map(m=>`<div onclick="document.getElementById('quickSearch').value='${m}';quickDict()" style="background:var(--card2);border-radius:10px;padding:9px 13px;margin-bottom:6px;cursor:pointer;border:1px solid var(--border);font-size:13px;font-weight:700">${m.charAt(0).toUpperCase()+m.slice(1)}</div>`).join('');
+    } else {
+      res.innerHTML=`<div style="color:var(--muted);font-size:13px;padding:10px">Yeh word dictionary mein nahi — AI Translator try karo!</div>`;
+    }
+  }
+}
+
+function showTool(tool){
+  if(tool==='dict') showFullDict();
+  else if(tool==='translate') showTranslator();
+  else if(tool==='glossary') showGlossary('Physics');
+  else if(tool==='vocab') showVocabQuiz();
+}
+
+function showFullDict(){
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px">
+      <button class="tnbtn" onclick="renderTools()" style="font-size:14px;font-weight:800">←</button>
+      <div style="font-size:17px;font-weight:800">📖 Dictionary</div>
+    </div>
+
+    <!-- DIRECTION TABS -->
+    <div style="display:flex;background:var(--card);border-radius:100px;padding:4px;border:1px solid var(--border)" id="dictDir">
+      <button class="lsb active" style="flex:1;border-radius:100px;padding:9px;font-size:13px" onclick="setDictDir('en','Eng → Urdu',this)">🇬🇧 Eng → Urdu</button>
+      <button class="lsb" style="flex:1;border-radius:100px;padding:9px;font-size:13px" onclick="setDictDir('ur','Urdu → Eng',this)">🇵🇰 Urdu → Eng</button>
+    </div>
+
+    <div style="display:flex;gap:8px">
+      <input id="dictInput" class="fi" placeholder="Word likho..." oninput="searchDict()" style="flex:1;border-radius:100px">
+      <button onclick="searchDict()" style="background:var(--blue);border:none;border-radius:100px;padding:11px 18px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">🔍</button>
+    </div>
+    <div id="dictResults"></div>
+
+    <!-- A-Z BROWSE -->
+    <div class="card">
+      <div style="font-size:13px;font-weight:800;margin-bottom:10px">📋 Sab Words Browse Karo</div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px" id="alphaFilter">
+        ${['All','A','B','C','D','E','F','G','H','I','K','L','M','N','O','P','R','S','T','V','W'].map((l,i)=>`<div onclick="filterAlpha('${l}')" style="background:${i===0?'var(--blue)':'var(--card2)'};color:${i===0?'#fff':'var(--text)'};border:1px solid ${i===0?'var(--blue)':'var(--border)'};border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer">${l}</div>`).join('')}
+      </div>
+      <div id="wordList">${renderWordList('All')}</div>
+    </div>
+  </div>`;
+}
+
+let dictDir = 'en';
+function setDictDir(d,label,btn){
+  dictDir=d;
+  btn.closest('#dictDir').querySelectorAll('.lsb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('dictInput').placeholder = d==='en'?'English word likho...':'Urdu meaning ya roman likho...';
+  document.getElementById('dictResults').innerHTML='';
+}
+
+function searchDict(){
+  const q=document.getElementById('dictInput').value.trim().toLowerCase();
+  const res=document.getElementById('dictResults');
+  if(!q){res.innerHTML='';return;}
+  const matches=Object.entries(miniDict).filter(([k,v])=>k.startsWith(q)||k.includes(q));
+  if(!matches.length){res.innerHTML=`<div style="color:var(--muted);font-size:13px;padding:10px">Koi word nahi mila — AI Translator try karo!</div>`;return;}
+  res.innerHTML=matches.slice(0,8).map(([k,v])=>`
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px">
+    <div style="font-size:17px;font-weight:800;color:var(--blue)">${k.charAt(0).toUpperCase()+k.slice(1)}</div>
+    <div style="font-size:13px;color:var(--text);margin-top:5px;line-height:1.7">${v}</div>
+    <div style="display:flex;gap:7px;margin-top:8px">
+      <span onclick="T('Copied!')" style="background:var(--blue-t);color:var(--blue);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer">📋 Copy</span>
+      <span onclick="T('Word saved!')" style="background:var(--green-t);color:var(--green);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer">⭐ Save</span>
+    </div>
+  </div>`).join('');
+}
+
+function filterAlpha(letter){
+  document.getElementById('alphaFilter').querySelectorAll('div').forEach(d=>{
+    const isThis=d.textContent===letter;
+    d.style.background=isThis?'var(--blue)':'var(--card2)';
+    d.style.color=isThis?'#fff':'var(--text)';
+    d.style.borderColor=isThis?'var(--blue)':'var(--border)';
+  });
+  document.getElementById('wordList').innerHTML=renderWordList(letter);
+}
+
+function renderWordList(letter){
+  const entries=Object.entries(miniDict).filter(([k])=>letter==='All'||k[0].toUpperCase()===letter);
+  return entries.map(([k,v])=>`
+  <div onclick="T('${k}: ${v.split('(')[0].trim()}')" style="display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);cursor:pointer">
+    <div style="font-size:13px;font-weight:800;color:var(--blue);width:110px;flex-shrink:0">${k.charAt(0).toUpperCase()+k.slice(1)}</div>
+    <div style="font-size:12px;color:var(--t2);line-height:1.5">${v.split('—')[0].trim()}</div>
+  </div>`).join('');
+}
+
+function showTranslator(){
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="tnbtn" onclick="renderTools()" style="font-size:14px;font-weight:800">←</button>
+      <div style="font-size:17px;font-weight:800">🔄 Translator</div>
+      <span style="background:var(--violet-t);color:var(--violet);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700">AI Powered</span>
+    </div>
+
+    <!-- DIRECTION SELECTOR -->
+    <div style="display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px">
+      <select id="fromLang" style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none">
+        <option value="en">🇬🇧 English</option>
+        <option value="ur">🇵🇰 Urdu</option>
+        <option value="rm">🇵🇰 Roman Urdu</option>
+      </select>
+      <button onclick="swapLangs()" style="background:var(--blue-t);border:1px solid rgba(91,108,249,.2);border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;flex-shrink:0">⇄</button>
+      <select id="toLang" style="flex:1;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:8px;font-size:13px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);outline:none">
+        <option value="ur">🇵🇰 Urdu</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="rm">🇵🇰 Roman Urdu</option>
+      </select>
+    </div>
+
+    <!-- INPUT -->
+    <div style="position:relative">
+      <textarea id="transInput" placeholder="Text likho jo translate karna hai..." rows="4" style="width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:14px 16px;font-size:14px;font-family:'Plus Jakarta Sans',sans-serif;color:var(--text);resize:none;outline:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+      <div style="position:absolute;bottom:10px;right:12px;font-size:11px;color:var(--muted)" id="charCount">0 / 500</div>
+    </div>
+    <script>document.getElementById('transInput').addEventListener('input',function(){document.getElementById('charCount').textContent=this.value.length+' / 500';});<\/script>
+
+    <!-- QUICK PHRASES -->
+    <div>
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:8px">⚡ Quick Phrases</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px">
+        ${['Define Newton\'s first law','What is photosynthesis?','Explain with example','Board exam definition','یہ کیسے کام کرتا ہے؟'].map(p=>`<div onclick="document.getElementById('transInput').value='${p}'" style="background:var(--card);border:1px solid var(--border);border-radius:100px;padding:5px 13px;font-size:11px;font-weight:700;cursor:pointer;color:var(--text)">${p}</div>`).join('')}
+      </div>
+    </div>
+
+    <button onclick="doTranslate()" style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:15px;font-size:15px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif;color:#fff;cursor:pointer;box-shadow:0 6px 24px rgba(91,108,249,.35)">🔄 Translate Karo</button>
+
+    <div id="transResult"></div>
+    <button class="bbtn" onclick="renderTools()">← Tools</button>
+  </div>`;
+}
+
+function swapLangs(){
+  const f=document.getElementById('fromLang');
+  const t=document.getElementById('toLang');
+  const tmp=f.value;f.value=t.value;t.value=tmp;
+  T('Languages swap ho gayi!');
+}
+
+function doTranslate(){
+  const txt=document.getElementById('transInput').value.trim();
+  if(!txt){T('Pehle kuch likho!');return;}
+  const from=document.getElementById('fromLang').value;
+  const to=document.getElementById('toLang').value;
+  const res=document.getElementById('transResult');
+  res.innerHTML=`<div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px;text-align:center"><div style="display:flex;gap:4px;justify-content:center;margin-bottom:8px"><div style="width:7px;height:7px;border-radius:50%;background:var(--blue);animation:tb 1.2s infinite"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--violet);animation:tb 1.2s .2s infinite"></div><div style="width:7px;height:7px;border-radius:50%;background:var(--cyan);animation:tb 1.2s .4s infinite"></div></div><div style="font-size:12px;color:var(--muted)">AI translate kar raha hai...</div></div>`;
+  
+  // Simulate AI translation with predefined responses
+  setTimeout(()=>{
+    const demos={
+      'Define Newton\'s first law':'نیوٹن کا پہلا قانون (قانون جمود): ہر جسم اپنی حالت میں رہتا ہے — سکون یا یکساں حرکت — جب تک کوئی بیرونی قوت نہ لگے۔',
+      'What is photosynthesis?':'ضیائی تالیف: وہ عمل جس میں پودے سورج کی روشنی، پانی اور کاربن ڈائی آکسائڈ سے خوراک (گلوکوز) بناتے ہیں۔',
+      'Explain with example':'مثال کے ساتھ سمجھائیں: پہلے تعریف لکھیں، پھر روزمرہ زندگی سے ایک مثال دیں۔'
+    };
+    const result = demos[txt] || (to==='ur'?`${txt} — (یہ "${txt}" کا اردو ترجمہ ہے)`:to==='rm'?`"${txt}" — Roman Urdu mein: yeh ek sample translation hai`:`This is the English translation of: "${txt}"`);
+    res.innerHTML=`
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:10px">✅ Translation</div>
+      <div style="${to==='ur'?'font-family:\'Noto Nastaliq Urdu\',serif;direction:rtl;font-size:16px;line-height:2.2':'font-size:14px;line-height:1.8'}">${result}</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button onclick="T('Copied!')" style="flex:1;background:var(--blue-t);border:none;border-radius:100px;padding:9px;font-size:12px;font-weight:700;color:var(--blue);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">📋 Copy</button>
+        <button onclick="T('AI Tutor mein bheja!')" style="flex:1;background:var(--violet-t);border:none;border-radius:100px;padding:9px;font-size:12px;font-weight:700;color:var(--violet);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif">🤖 Tutor Ko Bhejo</button>
+      </div>
+    </div>`;
+  },1500);
+}
+
+function showGlossary(subj){
+  const subjects=['Physics','Chemistry','Biology','Math'];
+  document.getElementById('sCont').innerHTML=`
+  <div style="display:flex;flex-direction:column;gap:13px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <button class="tnbtn" onclick="renderTools()" style="font-size:14px;font-weight:800">←</button>
+      <div style="font-size:17px;font-weight:800">📚 Subject Glossary</div>
+    </div>
+
+    <div style="display:flex;gap:7px;overflow-x:auto" id="subjTabs">
+      ${subjects.map((s,i)=>`<div onclick="switchGloss('${s}')" style="flex-shrink:0;background:${s===subj?'var(--blue)':'var(--card)'};border:1.5px solid ${s===subj?'var(--blue)':'var(--border)'};border-radius:100px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;color:${s===subj?'#fff':'var(--text)'}">${s}</div>`).join('')}
+    </div>
+
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:12px 14px;display:flex;gap:10px;align-items:center">
+      <input id="glossSearch" class="fi" placeholder="Term search karo..." oninput="filterGloss('${subj}')" style="border-radius:100px;padding:9px 14px">
+    </div>
+
+    <div id="glossList">${renderGlossTerms(subj,'')}</div>
+    <button class="bbtn" onclick="renderTools()">← Tools</button>
+  </div>`;
+}
+
+function switchGloss(subj){showGlossary(subj);}
+function filterGloss(subj){
+  const q=document.getElementById('glossSearch').value.toLowerCase();
+  document.getElementById('glossList').innerHTML=renderGlossTerms(subj,q);
+}
+
+function renderGlossTerms(subj,q){
+  const terms=(subjectGlossary[subj]||[]).filter(t=>!q||t.en.toLowerCase().includes(q)||t.rm.toLowerCase().includes(q));
+  const colors={Physics:'#5B6CF9',Chemistry:'#F43F5E',Biology:'#10B981',Math:'#F59E0B'};
+  const c=colors[subj]||'#5B6CF9';
+  if(!terms.length) return `<div style="color:var(--muted);font-size:13px;padding:12px;text-align:center">Koi term nahi mili</div>`;
+  return terms.map((t,i)=>`
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:9px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <div style="font-size:16px;font-weight:800;color:${c}">${t.en}</div>
+      <div style="background:${c}20;border-radius:100px;padding:2px 10px;font-size:10px;font-weight:700;color:${c}">${subj}</div>
+    </div>
+    <div style="font-family:'Noto Nastaliq Urdu',serif;font-size:15px;direction:rtl;line-height:2;color:var(--text)">${t.ur}</div>
+    <div style="font-size:12px;color:var(--violet);font-weight:700;margin-top:2px">${t.rm}</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;border-top:1px solid var(--border);padding-top:8px">${t.def}</div>
+    <div style="margin-top:8px">
+      <span onclick="T('${t.en} saved!')" style="background:var(--green-t);color:var(--green);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer">⭐ Save</span>
+      <span onclick="T('Quiz mein add!')" style="background:var(--amber-t);color:var(--amber);border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-left:6px">📝 Quiz Add</span>
+    </div>
+  </div>`).join('');
+}
+
+function showVocabQuiz(){
+  const allWords=Object.entries(miniDict);
+  const shuffled=allWords.sort(()=>Math.random()-.5).slice(0,5);
+  let vIdx=0, vScore=0;
+  
+  function renderVQ(){
+    if(vIdx>=shuffled.length){
+      document.getElementById('sCont').innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:13px;text-align:center">
+        <button class="tnbtn" onclick="renderTools()" style="font-size:14px;font-weight:800;align-self:flex-start">←</button>
+        <div style="font-size:52px">🎉</div>
+        <div style="font-size:48px;font-weight:800;color:var(--blue)">${vScore}/${shuffled.length}</div>
+        <div style="font-size:16px;font-weight:800">${vScore>=4?'Shaandaar! 🌟':vScore>=3?'Bohot Acha! 👍':'Thodi aur practice karo! 💪'}</div>
+        <button onclick="showVocabQuiz()" style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border:none;border-radius:100px;padding:14px;font-size:15px;font-weight:800;color:#fff;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-top:10px">🔄 Dobara Khelو</button>
+        <button class="bbtn" onclick="renderTools()">← Tools</button>
+      </div>`;
+      return;
+    }
+    const [word,meaning]=shuffled[vIdx];
+    // Make 4 options
+    const wrong=allWords.filter(([k])=>k!==word).sort(()=>Math.random()-.5).slice(0,3);
+    const opts=[...wrong,[word,meaning]].sort(()=>Math.random()-.5);
+    
+    document.getElementById('sCont').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:13px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="tnbtn" onclick="renderTools()" style="font-size:14px;font-weight:800">←</button>
+        <div style="font-size:17px;font-weight:800">🧠 Vocab Quiz</div>
+        <span style="margin-left:auto;font-size:13px;font-weight:800;color:var(--muted)">${vIdx+1}/5</span>
+      </div>
+      <div style="height:6px;background:var(--border);border-radius:100px"><div style="width:${((vIdx+1)/shuffled.length)*100}%;height:100%;border-radius:100px;background:linear-gradient(90deg,var(--blue),var(--violet))"></div></div>
+      <div style="background:linear-gradient(135deg,#5B6CF9,#8B5CF6);border-radius:20px;padding:28px 20px;text-align:center;color:#fff">
+        <div style="font-size:12px;font-weight:700;opacity:.75;margin-bottom:10px">Is word ka Urdu meaning kya hai?</div>
+        <div style="font-size:32px;font-weight:800">${word.charAt(0).toUpperCase()+word.slice(1)}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:9px" id="vqOpts">
+        ${opts.map(([k,v],i)=>{
+          const short=v.split('(')[0].trim().split('—')[0].trim();
+          return `<div onclick="checkVQ(this,'${k}','${word}')" style="background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:13px 16px;cursor:pointer;font-size:13px;font-weight:700;display:flex;align-items:center;gap:10px;transition:all .2s"><span style="width:24px;height:24px;border-radius:7px;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;flex-shrink:0">${['A','B','C','D'][i]}</span>${short.length>60?short.slice(0,60)+'...':short}</div>`;
+        }).join('')}
+      </div>
+    </div>`;
+    
+    window._vCorrect=word;
+    window._vNext=()=>{vIdx++;vScore+=(window._vGot?1:0);renderVQ();};
+  }
+  
+  window.checkVQ=function(el,chosen,correct){
+    document.querySelectorAll('#vqOpts div').forEach(d=>d.onclick=null);
+    if(chosen===correct){
+      el.style.borderColor='var(--green)';el.style.background='var(--green-t)';el.style.color='var(--green)';
+      window._vGot=true; T('Sahi! ✅ +1 point');
+    } else {
+      el.style.borderColor='var(--rose)';el.style.background='var(--rose-t)';el.style.color='var(--rose)';
+      window._vGot=false; T('Galat ❌ — Sahi answer dekho');
+      document.querySelectorAll('#vqOpts div').forEach(d=>{if(d.textContent.includes(miniDict[correct]?.split('(')[0].trim().slice(0,20))){d.style.borderColor='var(--green)';d.style.background='var(--green-t)';}});
+    }
+    setTimeout(window._vNext,1400);
+  };
+  renderVQ();
+}
+
+</script>
+
+<!-- SERVICE WORKER REGISTER -->
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(r=>console.log('✅ SW registered:', r.scope))
+      .catch(e=>console.log('SW error:', e));
+  });
+}
+
+// ===== PWA INSTALL BANNER =====
+let deferredPrompt = null;
+
+// Capture install event
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+
+function showInstallBanner(){
+  const banner = document.getElementById('installBanner');
+  if(banner) {
+    banner.style.display = 'flex';
+    setTimeout(()=>banner.style.opacity='1', 100);
+  }
+}
+
+function installApp(){
+  if(!deferredPrompt){ T('Browser mein: Share → Add to Home Screen!'); return; }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(r=>{
+    if(r.outcome==='accepted'){
+      T('✅ Smart Ustaad install ho gaya!');
+      document.getElementById('installBanner').style.display='none';
+    }
+    deferredPrompt=null;
+  });
+}
+
+function dismissBanner(){
+  const b=document.getElementById('installBanner');
+  if(b){ b.style.opacity='0'; setTimeout(()=>b.style.display='none',300); }
+  localStorage.setItem('bannerDismissed','1');
+}
+
+// Show banner after 3 seconds if not dismissed before
+setTimeout(()=>{
+  if(!window.matchMedia('(display-mode: standalone)').matches
+     && !localStorage.getItem('bannerDismissed')){
+    showInstallBanner();
+  }
+}, 3000);
+
+// Installed check
+window.addEventListener('appinstalled', ()=>{
+  T('🎉 Smart Ustaad install ho gaya! Home screen check karo');
+  document.getElementById('installBanner').style.display='none';
+});
+
+</script>
+</body>
+</html>
